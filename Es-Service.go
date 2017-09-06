@@ -10,7 +10,7 @@ import (
 	"github.com/Ballwang/tugo/config"
 	"github.com/Ballwang/tugo/soft/softServer"
 	consulapi "github.com/hashicorp/consul/api"
-	"strconv" 
+	"strconv"
 )
 
 var token = "eo99s001144999999381111"
