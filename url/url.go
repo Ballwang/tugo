@@ -6,7 +6,6 @@ type UrlTestGo struct {
 }
 
 func (U *UrlTestGo) SetValue() (err error) {
-
 	for i := 0; i < 100; i++ {
 		a := 2
 		b := 3

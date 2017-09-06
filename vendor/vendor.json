@@ -1,0 +1,120 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "WyriFpAZLM1vRPg28eq/nlpTohg=",
+			"path": "github.com/Ballwang/mcserver",
+			"revision": "0f75f5d10adf6d474ac1cfd4d33617e60315c357",
+			"revisionTime": "2017-08-03T08:59:39Z"
+		},
+		{
+			"checksumSHA1": "H4NMwFqn17QHZb+XCjOQlxnA1gU=",
+			"path": "github.com/Ballwang/mcserver/gen-go/UserAgent",
+			"revision": "0f75f5d10adf6d474ac1cfd4d33617e60315c357",
+			"revisionTime": "2017-08-03T08:59:39Z"
+		},
+		{
+			"checksumSHA1": "z9DKJ53EdrdoBuBmRcOogsC5wmY=",
+			"path": "github.com/Ballwang/mcserver/gen-go/business",
+			"revision": "63179d08604b556bc863d049216c55311710c354",
+			"revisionTime": "2017-07-19T06:43:49Z"
+		},
+		{
+			"checksumSHA1": "uKoapiicR88rwOpNQLmB4LjVFns=",
+			"path": "github.com/PuerkitoBio/goquery",
+			"revision": "8806ada2a4ab225c06e9106f9631be80932db7ce",
+			"revisionTime": "2017-06-23T16:21:02Z"
+		},
+		{
+			"checksumSHA1": "Bgs5fKx4V8jxL/m/krOLmhS4az4=",
+			"path": "github.com/andybalholm/cascadia",
+			"revision": "349dd0209470eabd9514242c688c403c0926d266",
+			"revisionTime": "2016-12-24T14:14:13Z"
+		},
+		{
+			"checksumSHA1": "a9SCrCvluICkujtkAwySEqTIsdM=",
+			"path": "github.com/axgle/mahonia",
+			"revision": "c528b747d92d41ca581a7acf3e604c396fc7c034",
+			"revisionTime": "2015-10-19T00:40:08Z"
+		},
+		{
+			"checksumSHA1": "iGAHizBUN43QlmYmn1bPLlNN9pw=",
+			"path": "github.com/hashicorp/consul/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "b8F628srIitj5p7Y130xc9k0QWs=",
+			"origin": "github.com/hashicorp/consul/vendor/github.com/hashicorp/go-cleanhttp",
+			"path": "github.com/hashicorp/go-cleanhttp",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "A1PcINvF3UiwHRKn8UcgARgvGRs=",
+			"origin": "github.com/hashicorp/consul/vendor/github.com/hashicorp/go-rootcerts",
+			"path": "github.com/hashicorp/go-rootcerts",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "E3Xcanc9ouQwL+CZGOUyA/+giLg=",
+			"origin": "github.com/hashicorp/consul/vendor/github.com/hashicorp/serf/coordinate",
+			"path": "github.com/hashicorp/serf/coordinate",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "V/quM7+em2ByJbWBLOsEwnY3j/Q=",
+			"origin": "github.com/hashicorp/consul/vendor/github.com/mitchellh/go-homedir",
+			"path": "github.com/mitchellh/go-homedir",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "w9kLe4LcJGOX30CN/J+pF8cIZeQ=",
+			"path": "github.com/mitchellh/mapstructure",
+			"revision": "d0303fe809921458f417bcf828397a65db30a7e4",
+			"revisionTime": "2017-05-23T03:00:23Z"
+		},
+		{
+			"checksumSHA1": "mR79ABWFyrDTTdhFPxwUN19T45Q=",
+			"path": "github.com/pkg/errors",
+			"revision": "c605e284fe17294bda444b34710735b29d1a9d90",
+			"revisionTime": "2017-05-05T04:36:39Z"
+		},
+		{
+			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"path": "golang.org/x/net/context",
+			"revision": "e4fa1c5465ad6111f206fc92186b8c83d64adbe1",
+			"revisionTime": "2017-06-02T19:04:32Z"
+		},
+		{
+			"checksumSHA1": "vqc3a+oTUGX8PmD0TS+qQ7gmN8I=",
+			"path": "golang.org/x/net/html",
+			"revision": "e4fa1c5465ad6111f206fc92186b8c83d64adbe1",
+			"revisionTime": "2017-06-02T19:04:32Z"
+		},
+		{
+			"checksumSHA1": "00eQaGynDYrv3tL+C7l9xH0IDZg=",
+			"path": "golang.org/x/net/html/atom",
+			"revision": "e4fa1c5465ad6111f206fc92186b8c83d64adbe1",
+			"revisionTime": "2017-06-02T19:04:32Z"
+		},
+		{
+			"checksumSHA1": "+DEMkQ5ftqMdaCmkV33uGn4xRZI=",
+			"path": "gopkg.in/olivere/elastic.v5",
+			"revision": "edbef41beaacc2ee95e61af8faff04e67c01e268",
+			"revisionTime": "2017-08-01T07:38:22Z"
+		},
+		{
+			"checksumSHA1": "XkWc8UePu0hj5PGyPVJrGoM7AU4=",
+			"path": "gopkg.in/olivere/elastic.v5/config",
+			"revision": "edbef41beaacc2ee95e61af8faff04e67c01e268",
+			"revisionTime": "2017-08-01T07:38:22Z"
+		},
+		{
+			"checksumSHA1": "x+ZyEkEsXKU47ycfEaegO0lxQpc=",
+			"path": "gopkg.in/olivere/elastic.v5/uritemplates",
+			"revision": "edbef41beaacc2ee95e61af8faff04e67c01e268",
+			"revisionTime": "2017-08-01T07:38:22Z"
+		}
+	],
+	"rootPath": "github.com/Ballwang/tugo"
+}
