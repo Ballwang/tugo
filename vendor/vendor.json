@@ -39,6 +39,12 @@
 			"revisionTime": "2015-10-19T00:40:08Z"
 		},
 		{
+			"checksumSHA1": "8hr0Qdu3Lhbt8lX50HUk7aIEnjA=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "abfd04d323c28c5c5683c2beb877fae36491d5a8",
+			"revisionTime": "2016-11-27T07:18:00Z"
+		},
+		{
 			"checksumSHA1": "iGAHizBUN43QlmYmn1bPLlNN9pw=",
 			"path": "github.com/hashicorp/consul/api",
 			"revision": ""

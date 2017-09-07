@@ -10,10 +10,11 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/Ballwang/tugo/soft/softServer"
-	consulapi "github.com/hashicorp/consul/api"
+	consulapi "	github.com/hashicorp/consul/api"
 
 	"encoding/json"
 	"strings"
+
 )
 
 var badToken = "72800634e9d0e3ccc0e32aca1154ff130894879283"
@@ -29,6 +30,7 @@ func CheckRightBadword(w http.ResponseWriter, req *http.Request) bool {
 			is = false
 		}
 	}
+
 	return is
 }
 
