@@ -6,16 +6,23 @@ import (
 	"github.com/Ballwang/tugo/config"
 	"time"
 	"fmt"
+	"encoding/json"
 )
+
+type dataContent struct {
+	Nodeid  string
+	Url     string
+	DataID  string
+	Badword []string
+}
 
 func main() {
 	fmt.Println("关键词过滤系统开始运行...")
 
 	//无限循环
 	for {
-		//startTime := tool.CurrentTimeMillis()
 
-		//获取所有关键词
+		//获取所有关键词 支持热更新关键词
 		badWord := tool.RedisSMEMBERS(config.BadWordSet)
 
 		c, _ := tool.NewRedis()
@@ -23,38 +30,40 @@ func main() {
 		//遍历采集总数
 		for {
 			//从集合中取出新采集内容进行匹配
-			url,_:=c.Do("SPOP",config.ValueSet)
-			if url!=nil {
-				urlString,_:=redis.String(url,nil)
-				html, _ := c.Do("GET", "Value:-"+urlString)
-				if html != nil && len(badWord) >= 0 {
-					htmlContent, _ := redis.String(html, nil)
-					i:=0
-					//过滤关键词
-					for _, v := range badWord {
-						if tool.FindBadWord(htmlContent, v) {
-							c.Do("SADD",config.BadWordStoreSet,urlString)
-							i++
-						}
+			reply, _ := c.Do("LPOP", config.DataFilterList)
+			if reply != nil {
+				isBadword := false
+				//json 转换到 结构体中，自动匹配对应字段，不区分大小写匹配，但是json中字段开头如果小写则不匹配
+				var d = &dataContent{}
+				content, _ := redis.String(reply, nil)
+				json.Unmarshal(reply.([]byte), &d)
+
+				//过滤关键词
+				for _, v := range badWord {
+					if tool.FindBadWord(content, v) {
+						isBadword = true
+						d.Badword = append(d.Badword, v)
 					}
-					//判断是否有敏感词存在
-					if i==0{
-						c.Do("SADD",config.NullBadWordSet,urlString)
-					}else {
-						//删除采集内容
-						c.Do("del","Value:-"+urlString)
-					}
-					//统一写入历史
-					md5String:=tool.Md5String(urlString)
-					c.Do("SADD",config.HistoryUrlSet,md5String)
 				}
-			}else {
+				//判断是否有敏感词存在
+				if !isBadword {
+					//未查到有敏感词转存采集内容
+					if d.Nodeid != "" && d.DataID != "" {
+						c.Do("HSET", config.DataPrefix+d.Nodeid, d.DataID, content)
+					}
+				} else {
+					b, _ := json.Marshal(*d)
+					c.Do("RPUSH", config.DataBadWordList, b)
+				}
+
+			} else {
 				break
 			}
+
 		}
 		c.Close()
-		//endTime := tool.CurrentTimeMillis()
-		//fmt.Printf("本次调用用时:%d-%d=%d毫秒\n", endTime, startTime, (endTime - startTime))
-		time.Sleep(1*time.Second)
+
+		time.Sleep(1 * time.Second)
 	}
+
 }

@@ -17,7 +17,6 @@ var token = "eo99s001144999999381111"
 
 //推送请求结果
 func ShowRequest(w http.ResponseWriter, r interface{}) {
-
 	bytes, _ := json.Marshal(r)
 	fmt.Fprint(w, string(bytes))
 }

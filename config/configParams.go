@@ -36,6 +36,7 @@ const PrefixCategory string = "cat:"
 //采集链接存储集合
 const ValueSet string = "ValueSet"
 
+
 //敏感词存储集合
 const BadWordSet = "BadWordSet"
 const BadWordStoreSet = "BadWordStoreSet"
@@ -80,6 +81,12 @@ const NullKey  ="NullKey"
 
 //挑取的字符串最小值
 const Minstringlen=1500
+
+
+const DataFilterList="node_data"
+const DataFilterResult="node_data_result"
+const DataBadWordList="node_data_badword_list"
+const DataPrefix="node:"
 
 
 type mainParams struct {
