@@ -49,13 +49,17 @@ func main() {
 				if !isBadword {
 					//未查到有敏感词转存采集内容
 					if d.Nodeid != "" && d.DataID != "" {
-						c.Do("HSET", config.DataPrefix+d.Nodeid, d.DataID, content)
+						c.Do("HGET",config.DataPrefix+d.Nodeid,d.DataID)
+						r,_:=redis.String(c.Do("HGET",config.DataPrefix+d.Nodeid,d.DataID))
+						if r==""{
+							c.Do("HSET", config.DataPrefix+d.Nodeid, d.DataID, content)
+							c.Do("HINCRBY",config.NodeCount,d.Nodeid,1)
+						}
 					}
 				} else {
 					b, _ := json.Marshal(*d)
 					c.Do("RPUSH", config.DataBadWordList, b)
 				}
-
 			} else {
 				break
 			}

@@ -87,6 +87,8 @@ const DataFilterList="node_data"
 const DataFilterResult="node_data_result"
 const DataBadWordList="node_data_badword_list"
 const DataPrefix="node:"
+const NodeCount="NodeCount"
+
 
 
 type mainParams struct {
