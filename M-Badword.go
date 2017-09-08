@@ -32,8 +32,80 @@ func CheckRightBadword(w http.ResponseWriter, req *http.Request) bool {
 	return is
 }
 
-//添加新关键词
+//更新所有关键词
 func AddNewBadword(w http.ResponseWriter, req *http.Request) {
+	req.ParseForm()
+	isAccess := CheckRightBadword(w, req)
+	result := make(map[string]interface{})
+	if !isAccess {
+		result["success"] = "false"
+		result["message"] = "权限验证失败"
+		bytes, _ := json.Marshal(result)
+		fmt.Fprint(w, string(bytes))
+		return
+	}
+	badwordResult, isbad := req.Form["badword"]
+	if !isbad {
+		result["success"] = "false"
+		result["message"] = "badword 必须填写！"
+		bytes, _ := json.Marshal(result)
+		fmt.Fprint(w, string(bytes))
+		return
+	}
+
+
+	c, err := tool.NewRedis()
+	if err != nil {
+		result["success"] = "false"
+		result["message"] = "Redis 链接失败！"
+		bytes, _ := json.Marshal(result)
+		fmt.Fprint(w, string(bytes))
+		return
+	}
+
+
+	defer c.Close()
+	badword:=badwordResult[0]
+
+	if badword != "" {
+		badword = strings.Replace(badword, " ", "", -1)
+		badword = strings.Replace(badword, "\n", "", -1)
+		badword = strings.Replace(badword, "\r\n", "", -1)
+		badword = strings.Replace(badword, "\r", "", -1)
+		if badword!=""{
+			r,e:=c.Do("SADD", config.BadWordSet, badword)
+			if e!=nil{
+				result["success"] = "false"
+				result["message"] = "敏感词添加失败！"
+				bytes, _ := json.Marshal(result)
+				fmt.Fprint(w, string(bytes))
+			}
+			if r!=nil{
+				result["success"] = "true"
+				result["message"] = "敏感词添加成功！"
+				bytes, _ := json.Marshal(result)
+				fmt.Fprint(w, string(bytes))
+			}
+		}else {
+			result["success"] = "false"
+			result["message"] = "请勿添加空值！"
+			bytes, _ := json.Marshal(result)
+			fmt.Fprint(w, string(bytes))
+		}
+
+
+	}else {
+		result["success"] = "false"
+		result["message"] = "敏感词添加失败！"
+		bytes, _ := json.Marshal(result)
+		fmt.Fprint(w, string(bytes))
+	}
+
+
+}
+
+//更新所有关键词
+func UpdateAllBadword(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	isAccess := CheckRightBadword(w, req)
 	result := make(map[string]interface{})
@@ -99,6 +171,7 @@ func AddNewBadword(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, string(bytes))
 }
 
+
 //删除关键词
 func DelBadeword(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
@@ -159,6 +232,7 @@ func main() {
 	//第一个参数为客户端发起http请求时的接口名，第二个参数是一个func，负责处理这个请求。
 	http.HandleFunc("/AddBadword", AddNewBadword)
 	http.HandleFunc("/DelBadword", DelBadeword)
+	http.HandleFunc("/UpdateAllBadword", UpdateAllBadword)
 
 	//服务器要监听的主机地址和端口号
 	//配置注册服务器信息
