@@ -7,6 +7,7 @@ import (
 	"time"
 	"fmt"
 	"encoding/json"
+	"strings"
 )
 
 type dataContent struct {
@@ -36,6 +37,8 @@ func main() {
 				//json 转换到 结构体中，自动匹配对应字段，不区分大小写匹配，但是json中字段开头如果小写则不匹配
 				var d = &dataContent{}
 				content, _ := redis.String(reply, nil)
+				//去除空值
+				content=strings.Replace(content," ","",-1)
 				json.Unmarshal(reply.([]byte), &d)
 
 				//过滤关键词
@@ -49,7 +52,6 @@ func main() {
 				if !isBadword {
 					//未查到有敏感词转存采集内容
 					if d.Nodeid != "" && d.DataID != "" {
-						c.Do("HGET",config.DataPrefix+d.Nodeid,d.DataID)
 						r,_:=redis.String(c.Do("HGET",config.DataPrefix+d.Nodeid,d.DataID))
 						if r==""{
 							c.Do("HSET", config.DataPrefix+d.Nodeid, d.DataID, content)
@@ -68,5 +70,4 @@ func main() {
 		c.Close()
 		time.Sleep(1 * time.Second)
 	}
-
 }
