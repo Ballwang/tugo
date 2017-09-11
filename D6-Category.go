@@ -14,7 +14,7 @@ import (
 
 var completeCat chan int = make(chan int)
 var textLen = 24 //8个汉字
-var serverIDCategory="S-Catgory"
+var serverIDCategory="D6-Catgory"
 var serverCategoryPort=8085
 
 //过滤列表页链接

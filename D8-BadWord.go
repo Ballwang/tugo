@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"encoding/json"
 	"strings"
+	"net/http"
+	"strconv"
 )
 
 type dataContent struct {
@@ -17,9 +19,9 @@ type dataContent struct {
 	Badword []string
 }
 
-func main() {
-	fmt.Println("关键词过滤系统开始运行...")
 
+//过滤关键词
+func FilterBadword(w http.ResponseWriter, req *http.Request)  {
 	//无限循环
 	for {
 
@@ -65,9 +67,33 @@ func main() {
 			} else {
 				break
 			}
+			tool.SetServerState("D8-BadWord","5")
 
 		}
 		c.Close()
 		time.Sleep(1 * time.Second)
+		tool.SetServerState("D8-BadWord","5")
 	}
+}
+
+//关键词过滤服务状态监控
+func FilterBadwordState(w http.ResponseWriter, req *http.Request)  {
+	fmt.Fprint(w,tool.GetServerState("D8-BadWord"))
+}
+
+func main() {
+
+	var serverID = "D8-BadWord"
+	var serverPort = 8094
+	ip := tool.GetIP()
+	http.HandleFunc("/FilterBadword", FilterBadword)
+	http.HandleFunc("/State", FilterBadwordState)
+	register := &tool.ConsulRegister{Id: serverID, Name: "D8-关键词过滤服务", Port: serverPort, Tags: []string{"D8 关键词过滤服务！"}}
+	register.RegisterConsulService()
+	err := http.ListenAndServe(ip+":"+strconv.Itoa(serverPort), nil)
+
+	if err != nil {
+		fmt.Println("Listen And Serve error: ", err.Error())
+	}
+
 }
