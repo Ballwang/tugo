@@ -70,7 +70,7 @@ func NewMcUserAgentClient(serverID string) (*UserAgent.UserAgentClient,*thrift.T
 	mc,mcIP,mcPort:=getMcServiceConfigFromConsul(serverID)
 	if !mc{
 		println("Mc service is down!!!")
-		os.Exit(1)
+
 	}
 	//创建 thrift 客户端
 	transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
@@ -79,13 +79,13 @@ func NewMcUserAgentClient(serverID string) (*UserAgent.UserAgentClient,*thrift.T
 	transport, err := thrift.NewTSocket(net.JoinHostPort(mcIP, mcPort))
 	if err != nil {
 		fmt.Println(os.Stderr, "errror resolving address", err)
-		os.Exit(1)
+
 	}
 	userTransport := transportFactory.GetTransport(transport)
 	client := UserAgent.NewUserAgentClientFactory(userTransport, protocolFactory)
 	if err := transport.Open(); err != nil {
 		fmt.Println(os.Stderr, "Error opening socket to "+mcIP+":"+mcPort, "", err)
-		os.Exit(1)
+
 	}
 	//defer transport.Close()
 	return client,transport,err

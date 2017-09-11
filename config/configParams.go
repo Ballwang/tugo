@@ -26,7 +26,13 @@ const MonitorShowHash = "MonitorShowHash"
 const MonitorTime int = 10
 
 //单词最大处里数
-const MaxProcess = 3
+const MaxProcess = 100
+
+//最大内容处理数量
+const MaxContentProcess = 200
+
+//列表监控最大并发数量
+const MaxListProcess=100
 
 //采集数据前缀
 const PrefixValve string = "Value:-"
@@ -62,6 +68,8 @@ const ContentPrefix="Content:"
 //内容页采集链接集合
 const ContentUrlSet="ContentUrlSet"
 
+const DataSource="node_source"
+
 
 //数据表字段
 const UrlStart  ="url_start:-"
@@ -71,11 +79,11 @@ const HostName ="Host:-"
 const TimeHost ="Time:-"
 const Sourcecharset ="sourcecharset:-"
 
-//网页链接数要最小个数
+//网页链接数最小个数
 const MinNumOfUrl=10
 //链接最大差值
 const MaxMinusValue=8
-//栏目也无法获取链接
+//栏目页无法获取链接
 const NullUrlInCategory  = "NullUrlInCategory"
 const NullKey  ="NullKey"
 
@@ -88,6 +96,10 @@ const DataFilterResult="node_data_result"
 const DataBadWordList="node_data_badword_list"
 const DataPrefix="node:"
 const NodeCount="NodeCount"
+
+const ServerState  ="ServerState:"
+
+const MaxCpu  = 3
 
 
 

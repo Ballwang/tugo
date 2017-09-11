@@ -59,3 +59,17 @@ func RedisSMEMBERS(Key string) []string {
 	return listString
 
 }
+
+//获取单个hash表值
+func RedisGetHashValue(hashName string,key string) (string, bool)  {
+	c, _ := NewRedis()
+	defer c.Close()
+	reply,err:=redis.String(c.Do("HGET",hashName,key))
+	if err!=nil{
+		Error(err)
+	}else {
+		return reply,true
+	}
+	return "",false
+
+}

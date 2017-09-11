@@ -19,7 +19,6 @@ func GetStringToUtf8(contentString string,charset string) string {
 
 //返回字符中所有中文字符长度
 func LenOfString(string string)int  {
-
 	reg := regexp.MustCompile(`[\p{Han}]+`)
 	contentString:=reg.FindAllString(string, -1)
 	string1:=""
