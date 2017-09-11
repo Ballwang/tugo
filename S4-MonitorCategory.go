@@ -57,17 +57,17 @@ func MonitorCategory(w http.ResponseWriter, req *http.Request) {
 			if IsEnd == 1 {
 				break
 			}
-			tool.SetServerState(serverIDCategory,"5")
+			tool.SetServerState("S4-MonitorCategory","5")
 		}
 		c.Close()
-		tool.SetServerState(serverIDCategory,"5")
+		tool.SetServerState("S4-MonitorCategory","5")
 		time.Sleep(1 * time.Second)
 	}
 
 }
 
 func MonitorCategoryState(w http.ResponseWriter, req *http.Request)  {
-	fmt.Fprint(w,tool.GetServerState(serverIDCategory))
+	fmt.Fprint(w,tool.GetServerState("S4-MonitorCategory"))
 }
 
 func main() {
