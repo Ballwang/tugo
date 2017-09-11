@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/Ballwang/tugo/tool"
-	"github.com/garyburd/redigo/redis"
 	"time"
 	"github.com/Ballwang/tugo/config"
 	"net/http"
@@ -30,7 +29,7 @@ func StartUpdateList(w http.ResponseWriter, req *http.Request)  {
 		string:=tool.RedisSMEMBERS(config.UpdateListSet)
 		if len(string)>0{
 			for _,v:=range string{
-				c.Do("RPUSH",params.MonitorList,v)
+				c.Do("RPUSH",config.MonitorList,v)
 			}
 		}
 		c.Close()
