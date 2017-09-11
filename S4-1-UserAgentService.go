@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"git.apache.org/thrift.git/lib/go/thrift"
+	"github.com/apache/thrift/lib/go/thrift"
 	consulapi "github.com/hashicorp/consul/api"
 	"os"
 	"github.com/Ballwang/tugo/soft/softServer"

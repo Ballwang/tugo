@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/Ballwang/mcserver/gen-go/business"
 	 consulapi "github.com/hashicorp/consul/api"
-	//"git.apache.org/thrift.git/lib/go/thrift"
+	//"github.com/apache/thrift/lib/go/thrift"
 	"github.com/Ballwang/tugo/config"
 	"github.com/Ballwang/mcserver/gen-go/UserAgent"
 	"github.com/apache/thrift/lib/go/thrift"
