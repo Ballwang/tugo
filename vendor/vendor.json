@@ -3,6 +3,10 @@
 	"ignore": "test",
 	"package": [
 		{
+			"path": "git.apache.org/thrift.git/lib/go/thrift",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "WyriFpAZLM1vRPg28eq/nlpTohg=",
 			"path": "github.com/Ballwang/mcserver",
 			"revision": "0f75f5d10adf6d474ac1cfd4d33617e60315c357",
