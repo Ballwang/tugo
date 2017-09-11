@@ -2,7 +2,6 @@
 	"comment": "",
 	"ignore": "test",
 	"package": [
-
 		{
 			"checksumSHA1": "WyriFpAZLM1vRPg28eq/nlpTohg=",
 			"path": "github.com/Ballwang/mcserver",
@@ -32,6 +31,12 @@
 			"path": "github.com/andybalholm/cascadia",
 			"revision": "349dd0209470eabd9514242c688c403c0926d266",
 			"revisionTime": "2016-12-24T14:14:13Z"
+		},
+		{
+			"checksumSHA1": "AXEjkZTcEi8D2MNkXMKO8Xgbyo8=",
+			"path": "github.com/apache/thrift/lib/go/thrift",
+			"revision": "2b1b32c2836c21ce012d39ebc02c8488d67d4cef",
+			"revisionTime": "2017-05-30T10:44:56Z"
 		},
 		{
 			"checksumSHA1": "a9SCrCvluICkujtkAwySEqTIsdM=",
