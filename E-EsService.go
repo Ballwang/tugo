@@ -351,7 +351,7 @@ func main() {
 	//配置注册服务器信息
 	ip:=tool.GetIP()
 	registration :=new(consulapi.AgentServiceRegistration)
-	registration.ID="es-service1"
+	registration.ID="es-service"
 	registration.Name="ES 全文搜索引擎接口服务"
 	registration.Address=ip
 	registration.Port=8081
