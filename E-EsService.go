@@ -244,7 +244,9 @@ func SearchEsDataHighScore(w http.ResponseWriter, req *http.Request) {
 
 	}
 
-	if hits.TotalHits > 0 {
+
+
+	if hits!=nil&&hits.TotalHits > 0 {
 		// Iterate through results
 		for _, hit := range hits.Hits {
 			// hit.Index contains the name of the index
@@ -349,7 +351,7 @@ func main() {
 	//配置注册服务器信息
 	ip:=tool.GetIP()
 	registration :=new(consulapi.AgentServiceRegistration)
-	registration.ID="es-service"
+	registration.ID="es-service1"
 	registration.Name="ES 全文搜索引擎接口服务"
 	registration.Address=ip
 	registration.Port=8081
