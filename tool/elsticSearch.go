@@ -61,6 +61,7 @@ func (c *ElasticEsearch) CreateIndex(cxt context.Context, indexString string, ma
 //增加数据
 func (c *ElasticEsearch) AddData(cxt context.Context, content *Content, idString string, indexString string, typeString string)(string,error)  {
 	client, err := c.NewElasticEsearch()
+
 	if err != nil {
 
 		return "",err
@@ -77,8 +78,29 @@ func (c *ElasticEsearch) AddData(cxt context.Context, content *Content, idString
 		return "",err
 	}
 
+
 	string:=content.ContentID+" 添加成功！全文系统ID："+put.Id
 	return string,nil
+}
+
+//增加数据
+func (c *ElasticEsearch) AddDataWithClient(cxt context.Context, client *elastic.Client,content *Content, idString string, indexString string, typeString string)(string,error)  {
+
+	_, err := client.Index().
+		Index(indexString).
+		Type(typeString).
+		Id(idString).
+		BodyJson(content).
+		Do(cxt)
+	if err != nil {
+		// Handle error
+
+		return "",err
+	}
+
+
+
+	return "",nil
 }
 
 //更新数据 与 add 函数一样，这里只做区分

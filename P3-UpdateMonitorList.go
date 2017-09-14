@@ -16,8 +16,8 @@ import (
 func StartUpdateMonitorList(w http.ResponseWriter, req *http.Request)  {
 	params:=config.NewMainParams()
 	for {
-		c,_:=tool.NewRedis()
-		mapString:=tool.RedisHGETALL(params.MonitorSiteHash)
+		c,_:=tool.NewRedisCluster()
+		mapString:=tool.RedisClusterHGETALL(params.MonitorSiteHash)
 		for _,v:=range mapString{
 			c.Do("RPUSH",params.MonitorList,v)
 		}

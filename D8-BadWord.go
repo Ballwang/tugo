@@ -26,9 +26,9 @@ func FilterBadword(w http.ResponseWriter, req *http.Request)  {
 	for {
 
 		//获取所有关键词 支持热更新关键词
-		badWord := tool.RedisSMEMBERS(config.BadWordSet)
+		badWord := tool.RedisClusterSMEMBERS(config.BadWordSet)
 
-		c, _ := tool.NewRedis()
+		c, _ := tool.NewRedisCluster()
 
 		//遍历采集总数
 		for {
@@ -64,6 +64,8 @@ func FilterBadword(w http.ResponseWriter, req *http.Request)  {
 					b, _ := json.Marshal(*d)
 					c.Do("RPUSH", config.DataBadWordList, b)
 				}
+				c.Do("HDEL",config.ContentParentHash,d.Url)
+				c.Do("DEL",config.PrefixCategory+d.Url)
 			} else {
 				break
 			}

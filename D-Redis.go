@@ -42,6 +42,7 @@ func DelHashData(w http.ResponseWriter, req *http.Request) {
 	result := make(map[string]interface{})
 	if !ok {
 		result["success"] = "false"
+		result["code"]="401"
 		result["message"] = "权限验证失败！"
 		ShowRequestRedis(w, result)
 		return
@@ -49,6 +50,7 @@ func DelHashData(w http.ResponseWriter, req *http.Request) {
 	nodeid, okNodeid := req.Form["nodeid"]
 	if !okNodeid {
 		result["success"] = "false"
+		result["code"]="418"
 		result["message"] = "nodeid 不能为空"
 		ShowRequestRedis(w, result)
 		return
@@ -56,6 +58,7 @@ func DelHashData(w http.ResponseWriter, req *http.Request) {
 	key, okkey := req.Form["key"]
 	if !okkey {
 		result["success"] = "false"
+		result["code"]="418"
 		result["message"] = "Key 不能为空"
 		ShowRequestRedis(w, result)
 		return
@@ -68,17 +71,20 @@ func DelHashData(w http.ResponseWriter, req *http.Request) {
 		_, err := c.Do("HINCRBY", config.NodeCount, nodeid[0], -1)
 		if err != nil {
 			result["success"] = "false"
+			result["code"]="511"
 			result["message"] = nodeid[0] + "：文章删除成功但是统计减一失败！"
 			ShowRequestRedis(w, result)
 			return
 		} else {
 			result["success"] = "true"
+			result["code"] = "200"
 			result["message"] = nodeid[0] + "：文章删除成功！"
 			ShowRequestRedis(w, result)
 			return
 		}
 	}else {
 		result["success"] = "false"
+		result["code"] = "421"
 		result["message"] = "该条数据不存在！nodeid:"+nodeid[0] + " ,key:"+key[0]
 		ShowRequestRedis(w, result)
 		return

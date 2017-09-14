@@ -39,6 +39,7 @@ func AddNewBadword(w http.ResponseWriter, req *http.Request) {
 	result := make(map[string]interface{})
 	if !isAccess {
 		result["success"] = "false"
+		result["code"]="401"
 		result["message"] = "权限验证失败"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -47,6 +48,7 @@ func AddNewBadword(w http.ResponseWriter, req *http.Request) {
 	badwordResult, isbad := req.Form["badword"]
 	if !isbad {
 		result["success"] = "false"
+		result["code"]="418"
 		result["message"] = "badword 必须填写！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -57,6 +59,7 @@ func AddNewBadword(w http.ResponseWriter, req *http.Request) {
 	c, err := tool.NewRedis()
 	if err != nil {
 		result["success"] = "false"
+		result["code"]="511"
 		result["message"] = "Redis 链接失败！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -76,18 +79,21 @@ func AddNewBadword(w http.ResponseWriter, req *http.Request) {
 			r,e:=c.Do("SADD", config.BadWordSet, badword)
 			if e!=nil{
 				result["success"] = "false"
+				result["code"]="510"
 				result["message"] = "敏感词添加失败！"
 				bytes, _ := json.Marshal(result)
 				fmt.Fprint(w, string(bytes))
 			}
 			if r!=nil{
 				result["success"] = "true"
+				result["success"] = "200"
 				result["message"] = "敏感词添加成功！"
 				bytes, _ := json.Marshal(result)
 				fmt.Fprint(w, string(bytes))
 			}
 		}else {
 			result["success"] = "false"
+			result["success"] = "422"
 			result["message"] = "请勿添加空值！"
 			bytes, _ := json.Marshal(result)
 			fmt.Fprint(w, string(bytes))
@@ -96,6 +102,7 @@ func AddNewBadword(w http.ResponseWriter, req *http.Request) {
 
 	}else {
 		result["success"] = "false"
+		result["code"]="510"
 		result["message"] = "敏感词添加失败！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -111,6 +118,7 @@ func UpdateAllBadword(w http.ResponseWriter, req *http.Request) {
 	result := make(map[string]interface{})
 	if !isAccess {
 		result["success"] = "false"
+		result["code"]="401"
 		result["message"] = "权限验证失败"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -129,6 +137,7 @@ func UpdateAllBadword(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Query("SELECT badword FROM js_badword")
 	if err != nil {
 		result["success"] = "false"
+		result["code"]="512"
 		result["message"] = "数据库连接失败！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -138,6 +147,7 @@ func UpdateAllBadword(w http.ResponseWriter, req *http.Request) {
 	c, err := tool.NewRedis()
 	if err != nil {
 		result["success"] = "false"
+		result["code"]="511"
 		result["message"] = "Redis 链接失败！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -150,6 +160,7 @@ func UpdateAllBadword(w http.ResponseWriter, req *http.Request) {
 		var badword string
 		if err := rows.Scan(&badword); err != nil {
 			result["success"] = "false"
+			result["code"]="513"
 			result["message"] = "敏感词查询错误！"
 			bytes, _ := json.Marshal(result)
 			fmt.Fprint(w, string(bytes))
@@ -166,6 +177,7 @@ func UpdateAllBadword(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 	result["success"] = "true"
+	result["code"]="200"
 	result["message"] = "敏感词更新成功！"
 	bytes, _ := json.Marshal(result)
 	fmt.Fprint(w, string(bytes))
@@ -176,15 +188,21 @@ func UpdateAllBadword(w http.ResponseWriter, req *http.Request) {
 func DelBadeword(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	isAccess := CheckRightBadword(w, req)
+	result := make(map[string]interface{})
 	if !isAccess {
-		fmt.Fprint(w, "权限验证失败！")
+		result["success"] = "false"
+		result["code"]="401"
+		result["message"] = "权限验证失败"
+		bytes, _ := json.Marshal(result)
+		fmt.Fprint(w, string(bytes))
 		return
 	}
-	result := make(map[string]interface{})
+
 
 	badword, isbad := req.Form["badword"]
 	if !isbad {
 		result["success"] = "false"
+		result["code"]="418"
 		result["message"] = "badword 必须填写！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -194,6 +212,7 @@ func DelBadeword(w http.ResponseWriter, req *http.Request) {
 	c, err := tool.NewRedis()
 	if err != nil {
 		result["success"] = "false"
+		result["code"]="511"
 		result["message"] = "Redis 创建失败！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -204,6 +223,7 @@ func DelBadeword(w http.ResponseWriter, req *http.Request) {
 	reply, err := c.Do("SREM", config.BadWordSet, badword[0])
 	if err != nil {
 		result["success"] = "false"
+		result["code"] = "511"
 		result["message"] = "Redis 命令执行失败！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
@@ -213,18 +233,19 @@ func DelBadeword(w http.ResponseWriter, req *http.Request) {
 	r := reply.(int64)
 	if r > 0 {
 		result["success"] = "true"
+		result["code"] = "200"
 		result["message"] = badword[0] + "敏感删除成功！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
 		return
 	} else {
 		result["success"] = "false"
+		result["code"] = "421"
 		result["message"] = "该敏感不存在！"
 		bytes, _ := json.Marshal(result)
 		fmt.Fprint(w, string(bytes))
 		return
 	}
-
 }
 
 //节点迁移工具把采集节点配置信息定期迁移到redis中

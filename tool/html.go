@@ -19,8 +19,7 @@ func ListHref(html string) []string {
 	match := hrefRegexp.FindAllString(html, -1)
 	result := []string{}
 	if match != nil {
-		for i, v := range match {
-			fmt.Println("[", i, "]-", v)
+		for _, v := range match {
 			result = append(result, v)
 		}
 	}

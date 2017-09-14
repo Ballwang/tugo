@@ -12,9 +12,10 @@ import (
 	"io"
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/garyburd/redigo/redis"
+	"github.com/chasex/redis-go-cluster"
 	"github.com/Ballwang/tugo/config"
 	"strconv"
+
 )
 
 var complete chan int = make(chan int)
@@ -23,9 +24,9 @@ var complete chan int = make(chan int)
 func MonitorCategory(w http.ResponseWriter, req *http.Request) {
 
 	for {
-		c, _ := tool.NewRedis()
+		c, _ := tool.NewRedisCluster()
 		IsEnd := 0
-
+		client, transport, _ := softClient.NewMcUserAgentClient("user_agent")
 		for {
 			SiteList := []string{}
 			for i := 0; i < config.MaxListProcess; i++ {
@@ -41,12 +42,11 @@ func MonitorCategory(w http.ResponseWriter, req *http.Request) {
 			}
 			process := len(SiteList)
 			if process > 0 {
-				client, transport, _ := softClient.NewMcUserAgentClient("user_agent")
 				for _, v := range SiteList {
 					//获取不同的User-agent 列表
 					ua, _ := client.GetAgentBySiteID("baidu.com")
 					//进入并发程序
-					go HtmlEye(v, ua.UserAgent, ua.AgentIp)
+					go HtmlEye(c,v, ua.UserAgent, ua.AgentIp)
 				}
 				transport.Close()
 				for i := 0; i < process; i++ {
@@ -90,14 +90,14 @@ func main() {
 }
 
 //监控网站是否有更新，使用缓冲区进行Md5加密，存入redis 进行新旧值进行比较
-func HtmlEye(url string, ua string, ip string) {
+func HtmlEye(c *redis.Cluster,url string, ua string, ip string) {
 
 	client := &http.Client{}
 	params := config.NewMainParams()
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
-		os.Exit(0)
+
 	}
 	request.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	request.Header.Add("Accept-Encoding", "gzip, deflate")
@@ -108,8 +108,7 @@ func HtmlEye(url string, ua string, ip string) {
 	response, _ := client.Do(request)
 
 	//创建 redis，在这里创建是因为go 分布式运行避免创建错误
-	c, err := tool.NewRedis()
-	defer c.Close()
+
 	//判断网页是否更新
 	if response != nil {
 		//请求成功

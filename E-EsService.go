@@ -36,6 +36,7 @@ func CheckRight(w http.ResponseWriter, req *http.Request) {
 	result := make(map[string]interface{})
 	if !is {
 		result["success"] = "false"
+		result["code"]="401"
 		result["message"] = "权限验证失败！"
 		ShowRequest(w, result)
 		return
@@ -48,6 +49,7 @@ func CheckValue(name string, w http.ResponseWriter, req *http.Request) bool {
 	result := make(map[string]interface{})
 	if !is {
 		result["success"] = "false"
+		result["code"]="418"
 		result["message"] = name + " 必须填写！"
 		ShowRequest(w, result)
 		return false
@@ -62,7 +64,8 @@ func AddEsData(w http.ResponseWriter, req *http.Request) {
 	_, isToken := req.Form["token"]
 	if !isToken {
 		result["success"] = "false"
-		result["message"] = "权限验证错误！"
+		result["code"]="401"
+		result["message"] = "权限验证失败！"
 		ShowRequest(w, result)
 		return
 	}
@@ -76,6 +79,7 @@ func AddEsData(w http.ResponseWriter, req *http.Request) {
 		siteName, isSiteName := req.Form["siteName"]
 		if !isSiteName {
 			result["success"] = "false"
+			result["code"]="418"
 			result["message"] = "SiteName 必须填写！"
 			ShowRequest(w, result)
 			return
@@ -88,7 +92,8 @@ func AddEsData(w http.ResponseWriter, req *http.Request) {
 		r, e := c.Check()
 		if !r {
 			result["success"] = "false"
-			result["detail"] = e
+			result["code"]="419"
+			result["message"] = e
 			ShowRequest(w, result)
 			return
 		}
@@ -99,11 +104,13 @@ func AddEsData(w http.ResponseWriter, req *http.Request) {
 		s, err := es.AddData(cxt, c, idString, es.Index, es.Type)
 		if err != nil {
 			result["success"] = "false"
-			result["message"] = "添加失败"
+			result["code"]="510"
+			result["message"] = "数据添加失败！"
 			ShowRequest(w, result)
 			return
 		} else {
 			result["success"] = "true"
+			result["code"]="200"
 			result["message"] = s
 			ShowRequest(w, result)
 			return
@@ -111,6 +118,7 @@ func AddEsData(w http.ResponseWriter, req *http.Request) {
 
 	} else {
 		result["success"] = "false"
+		result["code"]="420"
 		result["message"] = "提交类型错误！"
 		ShowRequest(w, result)
 		return
@@ -126,6 +134,7 @@ func DelEsData(w http.ResponseWriter, req *http.Request) {
 	siteName, isSiteName := req.Form["siteName"]
 	if !isSiteName {
 		result["success"] = "false"
+		result["code"]="418"
 		result["message"] = "SiteName 必须填写！"
 		ShowRequest(w, result)
 		return
@@ -134,6 +143,7 @@ func DelEsData(w http.ResponseWriter, req *http.Request) {
 	contentID, isContentID := req.Form["ContentID"]
 	if !isContentID {
 		result["success"] = "false"
+		result["code"]="418"
 		result["message"] = "ContentID 必须填写！"
 		ShowRequest(w, result)
 		return
@@ -145,11 +155,13 @@ func DelEsData(w http.ResponseWriter, req *http.Request) {
 	isSuccess := es.DeleteDataById(cxt, idString, es.Index, es.Type)
 	if isSuccess {
 		result["success"] = "true"
+		result["code"] = "200"
 		result["message"] = "文章ID：" + contentID[0] + " 删除成功！"
 		ShowRequest(w, result)
 		return
 	} else {
 		result["success"] = "false"
+		result["code"] = "421"
 		result["message"] = "文章ID：" + contentID[0] + " 不存在！"
 		ShowRequest(w, result)
 		return
@@ -260,6 +272,7 @@ func SearchEsDataHighScore(w http.ResponseWriter, req *http.Request) {
 
 			if *hit.Score == *hits.MaxScore {
 				result["success"] = "true"
+				result["code"] = "200"
 				result["message"] = "记录查找成功！"
 				result["score"] = *hits.MaxScore
 				result["hightlight"] = hit.Highlight
@@ -285,7 +298,8 @@ func UpdateEsData(w http.ResponseWriter, req *http.Request) {
 	_, isToken := req.Form["token"]
 	if !isToken {
 		result["success"] = "false"
-		result["message"] = "权限验证错误！"
+		result["code"]="401"
+		result["message"] = "权限验证失败！"
 		ShowRequest(w, result)
 		return
 	}
@@ -299,6 +313,7 @@ func UpdateEsData(w http.ResponseWriter, req *http.Request) {
 		siteName, isSiteName := req.Form["siteName"]
 		if !isSiteName {
 			result["success"] = "false"
+			result["code"]="418"
 			result["message"] = "SiteName 必须填写！"
 			ShowRequest(w, result)
 			return
@@ -311,22 +326,25 @@ func UpdateEsData(w http.ResponseWriter, req *http.Request) {
 		r, e := c.Check()
 		if !r {
 			result["success"] = "false"
-			result["detail"] = e
+			result["code"]="419"
+			result["message"] = e
 			ShowRequest(w, result)
 			return
 		}
-		fmt.Println(c)
+
 		cxt := context.Background()
 		es := tool.NewESFromConfig()
 		idString := tool.Md5String(siteName[0] + contentID[0])
 		s, err := es.AddData(cxt, c, idString, es.Index, es.Type)
 		if err != nil {
 			result["success"] = "false"
-			result["message"] = "更新失败！"
+			result["code"]="510"
+			result["message"] = "数据添加失败！"
 			ShowRequest(w, result)
 			return
 		} else {
 			result["success"] = "true"
+			result["code"]="200"
 			result["message"] = s
 			ShowRequest(w, result)
 			return
@@ -334,6 +352,7 @@ func UpdateEsData(w http.ResponseWriter, req *http.Request) {
 
 	} else {
 		result["success"] = "false"
+		result["code"]="420"
 		result["message"] = "提交类型错误！"
 		ShowRequest(w, result)
 		return

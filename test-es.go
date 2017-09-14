@@ -12,11 +12,11 @@ func main() {
 	// Create a context
 	//createIndex()
 	s:=tool.CurrentTimeMillis()
-	//createIndex()
+	createIndex()
 	//addData()
 	//GetData()
 	//del()
-	GetD()
+	//GetD()
 	e:=tool.CurrentTimeMillis()
 	tool.ShowTime(s,e)
 
@@ -86,7 +86,7 @@ func createIndex()  {
 	mapString := `
 	    {
 	       "settings":{
-	           "number_of_shards":5,
+	           "number_of_shards":6,
 		       "number_of_replicas":1
 	       },
 	       "mappings":{

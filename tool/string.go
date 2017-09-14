@@ -28,3 +28,18 @@ func LenOfString(string string)int  {
 	}
 	return len(string1)
 }
+
+//去何处换行空格，并替换
+func TrimReplace(urlpage string,replace string) string  {
+	urlpage=strings.Replace(urlpage,"\t",replace,-1)
+	urlpage=strings.Replace(urlpage,"\r\n",replace,-1)
+	urlpage=strings.Replace(urlpage,"\n",replace,-1)
+	urlpage=strings.Replace(urlpage,"\r",replace,-1)
+	return urlpage
+}
+
+//分割字符串
+func GetSplitOne(v string,split string) []string  {
+	string:=strings.Split(v, split)
+	return string
+}

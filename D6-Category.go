@@ -5,11 +5,11 @@ import (
 	"github.com/Ballwang/tugo/config"
 	"time"
 	"github.com/axgle/mahonia"
-	"github.com/garyburd/redigo/redis"
+	"github.com/chasex/redis-go-cluster"
 	"strings"
-	"fmt"
 	"net/http"
 	"strconv"
+	"fmt"
 )
 
 var completeCat chan int = make(chan int)
@@ -21,13 +21,12 @@ var serverCategoryPort=8085
 func FilterCategoryList(w http.ResponseWriter, req *http.Request)  {
 
 	for {
-		c, _ := tool.NewRedis()
+		c, _ := tool.NewRedisCluster()
 		IsEnd := 0
 		for {
 			SiteList := []string{}
 			for i := 0; i < config.MaxProcess; i++ {
-				reply, err := c.Do("LPOP", config.UpdateList)
-				tool.Error(err)
+				reply, _ := c.Do("LPOP", config.UpdateList)
 				if reply != nil {
 					SiteList = append(SiteList, string(reply.([]byte)))
 				} else {
@@ -40,7 +39,7 @@ func FilterCategoryList(w http.ResponseWriter, req *http.Request)  {
 			if process > 0 {
 				for _, v := range SiteList {
 					//进入并发程序
-					go GetUrlFromCategory(v)
+					go GetUrlFromCategory(c,v)
 				}
 				for i := 0; i < process; i++ {
 					<-completeCat
@@ -84,13 +83,13 @@ func main() {
 }
 
 //从栏目页提取链接
-func GetUrlFromCategory(url string) {
-	c, _ := tool.NewRedis()
-	html, _ := c.Do("Get", config.PrefixCategory+url)
-	if html != nil {
+func GetUrlFromCategory(c *redis.Cluster,url string) {
+
+	content, _ := c.Do("GET", config.PrefixCategory+url)
+	if content != nil {
 		//获取链接提取规则
 		urlString, _ := c.Do("HGET", config.MonitorShowHash, url)
-		content, _ := c.Do("GET", config.PrefixCategory+url)
+
 		//转化为小写
 
 		var contentString string
@@ -192,8 +191,7 @@ func GetUrlFromCategory(url string) {
 				}
 			}
 
-			//筛选结束
-			c, _ := tool.NewRedis()
+
 			result := []string{}
 			if len(countMap) > 0 && maxLen >= config.MinNumOfUrl {
 				for k, v := range countMap {

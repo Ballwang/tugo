@@ -4,20 +4,17 @@ import (
 	"net/http"
 	"net"
 	"time"
-	"github.com/Ballwang/tugo/soft/softClient"
-
 	"compress/gzip"
 	"io"
 	"io/ioutil"
+	"github.com/Ballwang/tugo/service/userAgentService"
 )
 
 //获取网站内容
-func HttpRequestContent(url string) (int,string) {
+func HttpRequestContent(url string) (int, string) {
+	agent := &userAgentService.WebAgent{}
 
-	userClient, transport, _ := softClient.NewMcUserAgentClient("user_agent")
-	ua, _ := userClient.GetAgentBySiteID(url)
-
-	defer transport.Close()
+	ua, _ := agent.GetAgentBySiteID(url)
 
 	client := &http.Client{
 		Transport: &http.Transport{
@@ -32,19 +29,18 @@ func HttpRequestContent(url string) (int,string) {
 			},
 		}, }
 
-
 	reqest, _ := http.NewRequest("GET", url, nil)
 	//tool.ErrorPrint(err)
 	reqest.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	reqest.Header.Add("Accept-Encoding", "gzip, deflate")
 	reqest.Header.Add("Accept-Language", "zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3")
 	reqest.Header.Add("Connection", "keep-alive")
-	reqest.Header.Add("Referer",url)
-	reqest.Header.Add("User-Agent",ua.UserAgent)
+	reqest.Header.Add("Referer", url)
+	reqest.Header.Add("User-Agent", ua.UserAgent)
 
 	response, _ := client.Do(reqest)
 	if response != nil {
-		if response.StatusCode==200{
+		if response.StatusCode == 200 {
 			var body string
 			switch response.Header.Get("Content-Encoding") {
 			case "gzip":
@@ -64,10 +60,10 @@ func HttpRequestContent(url string) (int,string) {
 				bodyByte, _ := ioutil.ReadAll(response.Body)
 				body = string(bodyByte)
 			}
-			return response.StatusCode,body
-		}else {
-			return response.StatusCode,""
+			return response.StatusCode, body
+		} else {
+			return response.StatusCode, ""
 		}
 	}
-	return 404,""
+	return 404, ""
 }

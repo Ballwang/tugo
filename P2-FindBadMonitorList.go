@@ -10,8 +10,9 @@ import (
 	"net"
 	"time"
 	"runtime"
-	"github.com/garyburd/redigo/redis"
+	"github.com/chasex/redis-go-cluster"
 	"encoding/json"
+
 )
 
 var MaxPage int = 1
@@ -25,9 +26,10 @@ func FindBadMonitorList(w http.ResponseWriter, req *http.Request) {
 
 	s := tool.CurrentTimeMillis()
 	fmt.Println("筛选分类链接是否可以访问...")
-	mapString := tool.RedisHGETALL(config.MonitorMiddleSiteHash)
+	mapString := tool.RedisClusterHGETALL(config.MonitorMiddleSiteHash)
+
 	urlArray := []string{}
-	c, _ := tool.NewRedis()
+	c, _ := tool.NewRedisCluster()
 	defer c.Close()
 	//分析链接
 	for _, v := range mapString {
@@ -39,7 +41,7 @@ func FindBadMonitorList(w http.ResponseWriter, req *http.Request) {
 			}
 		} else {
 			//fmt.Println(strings.Split(v, "\n"))
-			url := strings.Fields(v)
+			url := tool.GetSplitOne(v,config.Separate)
 			if len(url) > 1 {
 				i := 1
 				for _, v1 := range url {
@@ -62,7 +64,7 @@ func FindBadMonitorList(w http.ResponseWriter, req *http.Request) {
 	j := 1
 	if process > 0 {
 		for _, v := range urlArray {
-			go GetCatgoryListUrl(v)
+			go GetCatgoryListUrl(v,c)
 			if j%MaxProcess == 0 {
 				for i := 0; i < MaxProcess; i++ {
 					<-completeCategory
@@ -71,8 +73,6 @@ func FindBadMonitorList(w http.ResponseWriter, req *http.Request) {
 			j++
 		}
 	}
-
-
 	e := tool.CurrentTimeMillis()
 	fmt.Printf("本次调用用时:%d-%d=%d毫秒\n", e, s, (e - s))
 
@@ -80,7 +80,7 @@ func FindBadMonitorList(w http.ResponseWriter, req *http.Request) {
 
 //获取不能访问监控地址
 func FindBadMonitorSite(w http.ResponseWriter, req *http.Request) {
-	c, _ := tool.NewRedis()
+	c, _ := tool.NewRedisCluster()
 	r, _ := c.Do("SMEMBERS", config.BadSite)
 	list := []string{}
 	if r != nil {
@@ -101,11 +101,10 @@ func BadWordMonitorState(w http.ResponseWriter, req *http.Request)  {
 }
 
 func main() {
-
 	var serverID = "P2-FindBadMonitorList"
 	var serverPort = 8088
 	ip := tool.GetIP()
-	http.HandleFunc("/StartBadMonitorList", FindBadMonitorList)
+	http.HandleFunc("/StartMonitorList", FindBadMonitorList)
 	http.HandleFunc("/FindBdaWordList", FindBadMonitorSite)
 	http.HandleFunc("/State", BadWordMonitorState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "P2-链接失效监控服务", Port: serverPort, Tags: []string{"P2-链接失效监控服务"}}
@@ -117,8 +116,8 @@ func main() {
 	}
 }
 
-//判断列表页链接是否可以正常获取
-func GetCatgoryListUrl(siteUrl string) {
+//判断列表页链接是否可以正常获取,加入redis 客户端防止redis重复创建
+func GetCatgoryListUrl(siteUrl string,c *redis.Cluster) {
 	client := &http.Client{
 		Transport: &http.Transport{
 			Dial: func(netw, addr string) (net.Conn, error) {
@@ -140,7 +139,7 @@ func GetCatgoryListUrl(siteUrl string) {
 	reqest.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11")
 	response, _ := client.Do(reqest)
 	if response != nil {
-		c, _ := tool.NewRedis()
+
 		if response.StatusCode == 200 {
 			if c != nil {
 				c.Do("HSET", config.MonitorSiteHash, "S-:"+siteUrl, siteUrl)
@@ -148,7 +147,6 @@ func GetCatgoryListUrl(siteUrl string) {
 		} else {
 			c.Do("SADD", config.BadSite, siteUrl)
 		}
-		c.Close()
 	}
 
 	completeCategory <- 1

@@ -101,6 +101,8 @@ const ServerState  ="ServerState:"
 
 const MaxCpu  = 3
 
+const Separate  = "|||"
+
 
 
 type mainParams struct {
