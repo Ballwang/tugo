@@ -45,6 +45,12 @@
 			"revisionTime": "2015-10-19T00:40:08Z"
 		},
 		{
+			"checksumSHA1": "iWZX2+y2V2pYkId0Zr9SnZnqIGE=",
+			"path": "github.com/chasex/redis-go-cluster",
+			"revision": "222d81891f1d3fa7cf8b5655020352c3e5b4ec0f",
+			"revisionTime": "2016-12-07T02:39:22Z"
+		},
+		{
 			"checksumSHA1": "8hr0Qdu3Lhbt8lX50HUk7aIEnjA=",
 			"path": "github.com/go-sql-driver/mysql",
 			"revision": "abfd04d323c28c5c5683c2beb877fae36491d5a8",
