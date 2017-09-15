@@ -15,25 +15,25 @@ import (
 	"gopkg.in/olivere/elastic.v5"
 )
 
-var stepNumber = 2000
+var stepNumber = 5000
 
-
+//数据迁移具有毁灭性质
 
 func main() {
 	n := 0
 	params := config.NewConfig()
-	//mysqlHost := params.GetConfig("mysql", "mysqlHostDev")
-	//mysqlPort := params.GetConfig("mysql", "mysqlPortDev")
-	//mysqlUser := params.GetConfig("mysql", "mysqlUserDev")
-	//mysqlPassword := params.GetConfig("mysql", "mysqlPasswordDev")
-	//mysqlCharset := params.GetConfig("mysql", "mysqlCharsetDev")
-	//mysqlDatabase := params.GetConfig("mysql", "mysqlDatabaseDev")
-	mysqlHost := params.GetConfig("mysql", "mysqlHost")
-	mysqlPort := params.GetConfig("mysql", "mysqlPort")
-	mysqlUser := params.GetConfig("mysql", "mysqlUser")
-	mysqlPassword := params.GetConfig("mysql", "mysqlPassword")
-	mysqlCharset := params.GetConfig("mysql", "mysqlCharset")
-	mysqlDatabase := params.GetConfig("mysql", "mysqlDatabase")
+	mysqlHost := params.GetConfig("mysql", "mysqlHostDev")
+	mysqlPort := params.GetConfig("mysql", "mysqlPortDev")
+	mysqlUser := params.GetConfig("mysql", "mysqlUserDev")
+	mysqlPassword := params.GetConfig("mysql", "mysqlPasswordDev")
+	mysqlCharset := params.GetConfig("mysql", "mysqlCharsetDev")
+	mysqlDatabase := params.GetConfig("mysql", "mysqlDatabaseDev")
+	//mysqlHost := params.GetConfig("mysql", "mysqlHost")
+	//mysqlPort := params.GetConfig("mysql", "mysqlPort")
+	//mysqlUser := params.GetConfig("mysql", "mysqlUser")
+	//mysqlPassword := params.GetConfig("mysql", "mysqlPassword")
+	//mysqlCharset := params.GetConfig("mysql", "mysqlCharset")
+	//mysqlDatabase := params.GetConfig("mysql", "mysqlDatabase")
 
 
 	db, err := sql.Open("mysql", mysqlUser+":"+mysqlPassword+"@tcp("+mysqlHost+":"+mysqlPort+")/"+mysqlDatabase+"?charset="+mysqlCharset)
@@ -42,7 +42,7 @@ func main() {
 	}
 	c,_:=tool.NewRedis()
 	defer c.Close()
-	r,_:=redis.String(c.Do("GET","artical1-500"))
+	r,_:=redis.String(c.Do("GET","artical"))
 	//r,_:=redis.String(c.Do("GET","artical500-1000"))
 	fmt.Println(r)
 	if r!=""{
@@ -55,7 +55,7 @@ func main() {
 	jiangsu := params.GetConfig("siteName", "jiangsu")
 	for {
         s:=tool.CurrentTimeMillis()
-		rows, err := db.Query("SELECT t1.id,t1.title,t1.keywords,t1.description,t1.url,t1.author,t1.updatetime,t2.content,t2.copyfrom,t2.fbtitle FROM js_news as t1, js_news_data as t2 WHERE t1.id=t2.id Limit " + strconv.Itoa(n) + "," + strconv.Itoa(stepNumber))
+		rows, err := db.Query("SELECT t1.id,t1.title,t1.keywords,t1.description,t1.url,t1.author,t1.updatetime,t2.content,t2.copyfrom,t2.fbtitle FROM js_news as t1, js_news_data as t2 WHERE t1.id=t2.id AND t1.id >="+strconv.Itoa(n)+" AND t1.id<="+strconv.Itoa(n+stepNumber))
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -89,9 +89,9 @@ func main() {
 			isbreak = false
 		}
 		n = n + stepNumber
-		c.Do("SET","artical1-500",n)
+		c.Do("SET","artical",n)
 		//c.Do("SET","artical500-1000",n)
-		fmt.Println("===========================================")
+
 		if db != nil {
 
 		}

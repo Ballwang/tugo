@@ -36,11 +36,8 @@ func AddNodeToMonitor(w http.ResponseWriter, req *http.Request) {
 		urlpage=tool.TrimReplace(urlpage,config.Separate)
 		if urlpage != ""&&nodeid!="" {
 			c.Do("HSET",config.MonitorHash,"Host:-"+urlpage,urlpage)
-			c.Do("HSET",config.MonitorHash,"Time:-"+urlpage,10)
 			c.Do("HSET",config.MonitorHash,"nodeid:-"+urlpage,nodeid)
 			c.Do("HSET",config.MonitorHash,"sourcecharset:-"+urlpage,sourcecharset)
-			c.Do("HSET",config.MonitorHash,"url_start:-"+urlpage,url_start)
-			c.Do("HSET",config.MonitorHash,"url_end:-"+urlpage,url_end)
 			c.Do("HSET", config.MonitorMiddleSiteHash, "M:-"+urlpage, urlpage)
 		}
 	}
