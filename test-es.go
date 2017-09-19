@@ -86,48 +86,18 @@ func createIndex()  {
 	mapString := `
 	    {
 	       "settings":{
-	           "number_of_shards":6,
-		       "number_of_replicas":1
+	           "number_of_shards":5,
+		       "number_of_replicas":0
 	       },
 	       "mappings":{
 	           "_default_": {
 			      "_all": {
-				    "enabled": true,
-				    "analyzer": "ik_max_word",
-                    "search_analyzer": "ik_max_word"
+				    "enabled": false
 			      }
 		       },
-		       "detial":{
+		       "title":{
 		          "properties":{
 		              "Title":{
-                          "type": "text",
-                          "analyzer": "ik_max_word",
-                          "search_analyzer": "ik_max_word"
-		              },
-		              "TitleSub":{
-                          "type": "text",
-                          "analyzer": "ik_max_word",
-                          "search_analyzer": "ik_max_word"
-
-		              },
-		              "Description":{
-                          "type": "text",
-                          "analyzer": "ik_max_word",
-                          "search_analyzer": "ik_max_word"
-
-		              },
-		              "Author":{
-                          "type": "text",
-                          "analyzer": "ik_max_word",
-                          "search_analyzer": "ik_max_word"
-		              },
-		              "Time":{
-                          "type": "text"
-		              },
-		              "CopyFrom":{
-                          "type": "text"
-		              },
-		              "Content":{
                           "type": "text",
                           "analyzer": "ik_max_word",
                           "search_analyzer": "ik_max_word"
@@ -144,7 +114,7 @@ func createIndex()  {
 	    }
 	`
 
-	err:=es.CreateIndex(cxt, "artical", mapString)
+	err:=es.CreateIndex(cxt, "news", mapString)
 	if err!=nil{
 		fmt.Println(err)
 	}

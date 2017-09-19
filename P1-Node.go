@@ -7,7 +7,6 @@ import (
 	"github.com/Ballwang/tugo/tool"
 	"net/http"
 	"strconv"
-
 )
 
 //节点迁移工具把采集节点配置信息定期迁移到redis中

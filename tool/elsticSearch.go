@@ -103,6 +103,26 @@ func (c *ElasticEsearch) AddDataWithClient(cxt context.Context, client *elastic.
 	return "",nil
 }
 
+//增加数据
+func (c *ElasticEsearch) AddDataWithTitleClient(cxt context.Context, client *elastic.Client,content *Title, idString string, indexString string, typeString string)(string,error)  {
+
+	_, err := client.Index().
+		Index(indexString).
+		Type(typeString).
+		Id(idString).
+		BodyJson(content).
+		Do(cxt)
+	if err != nil {
+		// Handle error
+
+		return "",err
+	}
+
+
+
+	return "",nil
+}
+
 //更新数据 与 add 函数一样，这里只做区分
 func (c *ElasticEsearch) UpdateData(cxt context.Context, content *Content, idString string, indexString string, typeString string) error {
 	client, err := c.NewElasticEsearch()
@@ -201,6 +221,12 @@ type Content struct {
 	Time        string
 	CopyFrom    string
 	Content     string
+	Url         string
+	ContentID   string
+}
+
+type Title struct {
+	Title       string
 	Url         string
 	ContentID   string
 }

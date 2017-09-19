@@ -240,8 +240,10 @@ func SearchEsDataHighScore(w http.ResponseWriter, req *http.Request) {
 	es := tool.NewESFromConfig()
 
 	termQuery := elastic.NewMultiMatchQuery(query, field1)
-	termQuery.Type("best_fields")
+	//termQuery.Type("best_fields")
 	termQuery.TieBreaker(0.5)
+
+
 	params := config.NewConfig()
 	preTags := params.GetConfig("elasticsearch", "preTags")
 	postTags := params.GetConfig("elasticsearch", "postTags")
@@ -255,8 +257,6 @@ func SearchEsDataHighScore(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 
 	}
-
-
 
 	if hits!=nil&&hits.TotalHits > 0 {
 		// Iterate through results
@@ -370,7 +370,7 @@ func main() {
 	//配置注册服务器信息
 	ip:=tool.GetIP()
 	registration :=new(consulapi.AgentServiceRegistration)
-	registration.ID="es-service"
+	registration.ID="es-service11"
 	registration.Name="ES 全文搜索引擎接口服务"
 	registration.Address=ip
 	registration.Port=8081
