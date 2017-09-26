@@ -7,6 +7,8 @@ import (
 	"github.com/Ballwang/tugo/tool"
 	"net/http"
 	"strconv"
+	"time"
+	"math/rand"
 )
 
 //节点迁移工具把采集节点配置信息定期迁移到redis中
@@ -50,13 +52,15 @@ func NodeToMonitorState(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	var serverID = "P1-MysqlNodeToRedis"
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	id:=r.Intn(100)
+	var serverID = "P1-Node:"+strconv.Itoa(id)
 	var serverPort = 8087
 	ip := tool.GetIP()
 
 	http.HandleFunc("/AddNodeToMonitor", AddNodeToMonitor)
 	http.HandleFunc("/State", NodeToMonitorState)
-	register := &tool.ConsulRegister{Id: serverID, Name: "P1-数据库节点同步监控服务", Port: serverPort, Tags: []string{"数据库节点同步监控服务"}}
+	register := &tool.ConsulRegister{Id: serverID, Name: "P1-Node", Port: serverPort, Tags: []string{"数据库节点同步监控服务"}}
 	register.RegisterConsulService()
 	err := http.ListenAndServe(ip+":"+strconv.Itoa(serverPort), nil)
 

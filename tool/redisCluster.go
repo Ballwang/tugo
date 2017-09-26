@@ -10,7 +10,7 @@ import (
 func NewRedisCluster() (*redis.Cluster, error) {
 	c, err := redis.NewCluster(
 		&redis.Options{
-			StartNodes:   []string{"192.168.4.83:7001", "192.168.4.83:7002", "192.168.4.84:7003", "192.168.4.85:7004", "192.168.4.85:7005", "192.168.4.85:7005"},
+			StartNodes:   []string{"192.168.4.83:7001", "192.168.4.83:7002", "192.168.4.84:7003", "192.168.4.85:7004", "192.168.4.85:7005", "192.168.4.85:7006"},
 			ConnTimeout:  50 * time.Millisecond,
 			ReadTimeout:  50 * time.Millisecond,
 			WriteTimeout: 50 * time.Millisecond,

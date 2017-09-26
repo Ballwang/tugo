@@ -58,20 +58,26 @@ func FindBadMonitorList(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
+
 	//开始请求
 	process := len(urlArray)
 	runtime.GOMAXPROCS(config.MaxCpu)
-	j := 1
+	j := 0
 	if process > 0 {
 		for _, v := range urlArray {
 			go GetCatgoryListUrl(v,c)
+			j++
 			if j%MaxProcess == 0 {
 				for i := 0; i < MaxProcess; i++ {
 					<-completeCategory
 				}
+				j=0
 			}
-			j++
 		}
+		for i := 0; i < j; i++ {
+			<-completeCategory
+		}
+
 	}
 	e := tool.CurrentTimeMillis()
 	fmt.Printf("本次调用用时:%d-%d=%d毫秒\n", e, s, (e - s))
@@ -130,6 +136,7 @@ func GetCatgoryListUrl(siteUrl string,c *redis.Cluster) {
 				return c, nil
 			},
 		}, }
+	s:=tool.CurrentTimeMillis()
 	reqest, _ := http.NewRequest("GET", siteUrl, nil)
 	//tool.ErrorPrint(err)
 	reqest.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -138,6 +145,10 @@ func GetCatgoryListUrl(siteUrl string,c *redis.Cluster) {
 	reqest.Header.Add("Connection", "keep-alive")
 	reqest.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11")
 	response, _ := client.Do(reqest)
+	e:=tool.CurrentTimeMillis()
+	fmt.Println(siteUrl)
+	tool.ShowTime(s,e)
+	fmt.Println("--------------------------\n")
 	if response != nil {
 
 		if response.StatusCode == 200 {

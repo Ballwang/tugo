@@ -76,9 +76,6 @@ func GetALabelUrl(string string) string {
 		} else {
 			reg = regexp.MustCompile(`href=.*?\s`)
 			url = reg.FindAllString(string, -1)
-
-			fmt.Print("3333\n")
-			fmt.Print(url)
 			if url != nil {
 				return strings.Replace(strings.Replace(url[0], "href=", "", -1), "'", "", -1)
 			} else {

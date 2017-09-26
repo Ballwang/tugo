@@ -1,0 +1,10 @@
+FROM 192.168.3.54:5000/centos7-go1.9:1.0
+
+MAINTAINER Ballwang  ballwang@foxmail.com
+
+ADD ./config/ /go/src/config/
+ADD P1-Node /go/src/
+ADD start.sh /go/src/
+RUN chmod 755 /go/src/
+
+CMD /go/src/start.sh

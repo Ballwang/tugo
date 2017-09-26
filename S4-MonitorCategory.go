@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 	"net/http"
-	"os"
 	"github.com/Ballwang/tugo/tool"
 	"io/ioutil"
 	"compress/gzip"
@@ -15,14 +14,12 @@ import (
 	"github.com/chasex/redis-go-cluster"
 	"github.com/Ballwang/tugo/config"
 	"strconv"
-
 )
 
 var complete chan int = make(chan int)
 
 //定期获取监控队列进行扫描监控
 func MonitorCategory(w http.ResponseWriter, req *http.Request) {
-
 	for {
 		c, _ := tool.NewRedisCluster()
 		IsEnd := 0
@@ -46,9 +43,9 @@ func MonitorCategory(w http.ResponseWriter, req *http.Request) {
 					//获取不同的User-agent 列表
 					ua, _ := client.GetAgentBySiteID("baidu.com")
 					//进入并发程序
-					go HtmlEye(c,v, ua.UserAgent, ua.AgentIp)
+					go HtmlEye(c, v, ua.UserAgent, ua.AgentIp)
 				}
-				transport.Close()
+
 				for i := 0; i < process; i++ {
 					<-complete
 				}
@@ -57,17 +54,19 @@ func MonitorCategory(w http.ResponseWriter, req *http.Request) {
 			if IsEnd == 1 {
 				break
 			}
-			tool.SetServerState("S4-MonitorCategory","5")
+			tool.SetServerState("S4-MonitorCategory", "5")
+
 		}
+		transport.Close()
 		c.Close()
-		tool.SetServerState("S4-MonitorCategory","5")
+		tool.SetServerState("S4-MonitorCategory", "5")
 		time.Sleep(1 * time.Second)
 	}
 
 }
 
-func MonitorCategoryState(w http.ResponseWriter, req *http.Request)  {
-	fmt.Fprint(w,tool.GetServerState("S4-MonitorCategory"))
+func MonitorCategoryState(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprint(w, tool.GetServerState("S4-MonitorCategory"))
 }
 
 func main() {
@@ -78,7 +77,7 @@ func main() {
 
 	http.HandleFunc("/MonitorCategory", MonitorCategory)
 	http.HandleFunc("/State", MonitorCategoryState)
-	register := &tool.ConsulRegister{Id: serverID, Name: "列表更新监控服务", Port: serverPort, Tags: []string{"列表更新监控服务，监控目标采集点是否更新内容！"}}
+	register := &tool.ConsulRegister{Id: serverID, Name: "S4-列表更新监控服务", Port: serverPort, Tags: []string{"列表更新监控服务，监控目标采集点是否更新内容！"}}
 	register.RegisterConsulService()
 	err := http.ListenAndServe(ip+":"+strconv.Itoa(serverPort), nil)
 
@@ -86,15 +85,18 @@ func main() {
 		fmt.Println("Listen And Serve error: ", err.Error())
 	}
 
-
 }
 
+
+
 //监控网站是否有更新，使用缓冲区进行Md5加密，存入redis 进行新旧值进行比较
-func HtmlEye(c *redis.Cluster,url string, ua string, ip string) {
+func HtmlEye(c *redis.Cluster, url string, ua string, ip string) {
 
 	client := &http.Client{}
+
 	params := config.NewMainParams()
 	request, err := http.NewRequest("GET", url, nil)
+
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
 
@@ -121,49 +123,59 @@ func HtmlEye(c *redis.Cluster,url string, ua string, ip string) {
 			switch response.Header.Get("Content-Encoding") {
 			case "gzip":
 				reader, _ := gzip.NewReader(response.Body)
-				for {
-					buf := make([]byte, 1024)
-					n, err := reader.Read(buf)
-					if err != nil && err != io.EOF {
-						panic(err)
+				if reader != nil {
+					for {
+						buf := make([]byte, 1024)
+						n, err := reader.Read(buf)
+						if err != nil && err != io.EOF {
+							panic(err)
+						}
+						if n == 0 {
+							break
+						}
+						body += string(buf)
 					}
-					if n == 0 {
-						break
-					}
-					body += string(buf)
 				}
+
 			default:
 				bodyByte, _ := ioutil.ReadAll(response.Body)
 				body = string(bodyByte)
 			}
+			if body != "" {
+				//对返回值进行 md5 加密判断是否更新
+				h := md5.New()
+				h.Write([]byte(body))
+				md5String := hex.EncodeToString(h.Sum(nil))
 
-			//对返回值进行 md5 加密判断是否更新
-			h := md5.New()
-			h.Write([]byte(body))
-			md5String := hex.EncodeToString(h.Sum(nil))
+				//获取历史记录判断是否有存在历史
+				reply, _ := c.Do("GET", url)
+				//判断是否查找到历史记录
+				if reply != nil {
+					//获取历史md5记录
+					replyMd5String, _ := redis.String(reply, err)
+					//判断新记录是否与历史记录相同
+					if md5String != replyMd5String {
+					//if true {
+						//新值和旧值不相同，写入更新队列，排除并发带来的重复值
+						c.Do("SADD", params.UpdateListSet, url)
+						c.Do("SET", config.PrefixCategory+url, body)
+						//c.Do("SADD",config.ValueSet,url)
+						//设置新值
+						c.Do("SET", url, md5String)
 
-			//获取历史记录判断是否有存在历史
-			reply, err := c.Do("GET", url)
-			//判断是否查找到历史记录
-			if reply != nil {
-				//获取历史md5记录
-				replyMd5String, _ := redis.String(reply, err)
-				//判断新记录是否与历史记录相同
-				if md5String != replyMd5String {
-					//新值和旧值不相同，写入更新队列，排除并发带来的重复值
-					c.Do("SADD", params.UpdateListSet, url)
-					c.Do("SET", config.PrefixCategory+url, []byte(body))
-					//c.Do("SADD",config.ValueSet,url)
-					//设置新值
+					}
+				} else {
+					//未查找到历史记录，则记录首次历史
+
 					c.Do("SET", url, md5String)
+					c.Do("SET", config.PrefixCategory+url, body)
+					//c.Do("SADD",config.ValueSet,url)
+					//加入更新队列，排除并发带来的重复值
+					c.Do("SADD", params.UpdateListSet, url)
+
 				}
 			} else {
-				//未查找到历史记录，则记录首次历史
-				c.Do("SET", url, md5String)
-				c.Do("SET", config.PrefixCategory+url, []byte(body))
-				//c.Do("SADD",config.ValueSet,url)
-				//加入更新队列，排除并发带来的重复值
-				c.Do("SADD", params.UpdateListSet, url)
+
 			}
 		} else if response.StatusCode >= 400 {
 			_, err = c.Do("SADD", params.BadSite, url)
@@ -183,6 +195,6 @@ func HtmlEye(c *redis.Cluster,url string, ua string, ip string) {
 
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
-		os.Exit(0)
+
 	}
 }

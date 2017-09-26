@@ -2,10 +2,8 @@ package main
 
 import (
 	"github.com/Ballwang/tugo/tool"
-
 	"github.com/Ballwang/tugo/config"
 	"time"
-
 	"net/http"
 	"strconv"
 	"fmt"
@@ -22,8 +20,8 @@ func StartUpdateMonitorList(w http.ResponseWriter, req *http.Request)  {
 			c.Do("RPUSH",params.MonitorList,v)
 		}
 		c.Close()
-		time.Sleep(6*time.Second)
-		tool.SetServerState("P3-UpdateMonitorList","7")
+		time.Sleep(30*time.Second)
+		tool.SetServerState("P3-UpdateMonitorList","40")
 	}
 }
 
