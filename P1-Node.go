@@ -62,7 +62,7 @@ func main() {
 
 	http.HandleFunc("/AddNodeToMonitor", AddNodeToMonitor)
 	http.HandleFunc("/State", NodeToMonitorState)
-	register := &tool.ConsulRegister{Id: serverID, Name: "P111-Node", Port: serverPort, Tags: []string{"数据库节点同步监控服务"}}
+	register := &tool.ConsulRegister{Id: serverID, Name: "P-Node", Port: serverPort, Tags: []string{"数据库节点同步监控服务"}}
 	register.RegisterConsulService()
 	err := http.ListenAndServe(ip+":"+strconv.Itoa(serverPort), nil)
 
