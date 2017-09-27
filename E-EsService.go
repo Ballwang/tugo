@@ -368,10 +368,11 @@ func main() {
 	http.HandleFunc("/Update", UpdateEsData)
 	//服务器要监听的主机地址和端口号
 	//配置注册服务器信息
+	id:=tool.RandNum(100)
 	ip:=tool.GetIP()
 	registration :=new(consulapi.AgentServiceRegistration)
-	registration.ID="es-service11"
-	registration.Name="ES 全文搜索引擎接口服务"
+	registration.ID="E-EsService:"+strconv.Itoa(id)
+	registration.Name="E-EsService"
 	registration.Address=ip
 	registration.Port=8081
 	registration.Tags=[]string{"Elasticsearch 接口服务器地址！"}

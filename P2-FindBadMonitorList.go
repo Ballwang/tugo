@@ -107,13 +107,14 @@ func BadWordMonitorState(w http.ResponseWriter, req *http.Request)  {
 }
 
 func main() {
-	var serverID = "P2-FindBadMonitorList"
+	id:=tool.RandNum(100)
+	var serverID = "P2-FindBadMonitorList:"+strconv.Itoa(id)
 	var serverPort = 8088
 	ip := tool.GetIP()
 	http.HandleFunc("/StartMonitorList", FindBadMonitorList)
 	http.HandleFunc("/FindBdaWordList", FindBadMonitorSite)
 	http.HandleFunc("/State", BadWordMonitorState)
-	register := &tool.ConsulRegister{Id: serverID, Name: "P2-链接失效监控服务", Port: serverPort, Tags: []string{"P2-链接失效监控服务"}}
+	register := &tool.ConsulRegister{Id: serverID, Name: "P2-FindBadMonitorList", Port: serverPort, Tags: []string{"P2-链接失效监控服务"}}
 	register.RegisterConsulService()
 	err := http.ListenAndServe(ip+":"+strconv.Itoa(serverPort), nil)
 

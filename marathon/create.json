@@ -1,0 +1,32 @@
+{
+  "id": "p1-node",
+  "cpus": 0.5,
+  "mem": 128.0,
+  "instances": 3,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "192.168.3.54:5000/p1-node:1.0",
+      "network": "HOST",
+      "forcePullImage":true,
+      "portMappings": [
+        {
+          "containerPort": 8087,
+          "hostPort": 0,
+          "servicePort": 8087,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  },
+  "healthChecks": [
+    {
+      "protocol": "TCP",
+      "gracePeriodSeconds": 3,
+      "intervalSeconds": 5,
+      "port ":8087,
+      "timeoutSeconds": 5,
+      "maxConsecutiveFailures": 3
+    }
+  ]
+}

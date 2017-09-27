@@ -42,13 +42,13 @@ func UpdateListState(w http.ResponseWriter, req *http.Request) {
 
 //更新队列
 func main() {
-
-	var serverID = "P5-UpdateList"
+	id:=tool.RandNum(100)
+	var serverID = "P5-UpdateList:"+strconv.Itoa(id)
 	var serverPort = 8092
 	ip := tool.GetIP()
 	http.HandleFunc("/StartUpdateList", StartUpdateList)
 	http.HandleFunc("/State", UpdateListState)
-	register := &tool.ConsulRegister{Id: serverID, Name: "P5-迁移变动列表服务", Port: serverPort, Tags: []string{"P5 能够迁移有变动的列表链接到带采集队列中！"}}
+	register := &tool.ConsulRegister{Id: serverID, Name: "P5-UpdateList", Port: serverPort, Tags: []string{"P5 能够迁移有变动的列表链接到带采集队列中！"}}
 	register.RegisterConsulService()
 	err := http.ListenAndServe(ip+":"+strconv.Itoa(serverPort), nil)
 

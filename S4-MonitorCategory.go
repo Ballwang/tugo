@@ -70,14 +70,14 @@ func MonitorCategoryState(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-
-	var serverID = "S4-MonitorCategory"
+	id:=tool.RandNum(100)
+	var serverID = "S4-MonitorCategory:"+strconv.Itoa(id)
 	var serverPort = 8090
 	ip := tool.GetIP()
 
 	http.HandleFunc("/MonitorCategory", MonitorCategory)
 	http.HandleFunc("/State", MonitorCategoryState)
-	register := &tool.ConsulRegister{Id: serverID, Name: "S4-列表更新监控服务", Port: serverPort, Tags: []string{"列表更新监控服务，监控目标采集点是否更新内容！"}}
+	register := &tool.ConsulRegister{Id: serverID, Name: "S4-MonitorCategory", Port: serverPort, Tags: []string{"列表更新监控服务，监控目标采集点是否更新内容！"}}
 	register.RegisterConsulService()
 	err := http.ListenAndServe(ip+":"+strconv.Itoa(serverPort), nil)
 

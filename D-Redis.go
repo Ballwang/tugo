@@ -97,10 +97,11 @@ func main() {
 
 	//服务器要监听的主机地址和端口号
 	//配置注册服务器信息
+	id:=tool.RandNum(100)
 	ip := tool.GetIP()
 	registration := new(consulapi.AgentServiceRegistration)
-	registration.ID = "D-Redis"
-	registration.Name = "Redis 数据服务接口!"
+	registration.ID = "D-Redis:"+strconv.Itoa(id)
+	registration.Name = "D-Redis"
 	registration.Address = ip
 	registration.Port = 8084
 	registration.Tags = []string{"Redis 数据服务接口!"}

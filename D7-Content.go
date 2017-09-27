@@ -82,12 +82,13 @@ func GetContent(c *redis.Cluster, url string) {
 }
 
 func main() {
-	var serverID = "D7-Content"
+	id:=tool.RandNum(100)
+	var serverID = "D7-Content:"+strconv.Itoa(id)
 	var serverPort = 8093
 	ip := tool.GetIP()
 	http.HandleFunc("/StartGetContent", StartGetContent)
 	http.HandleFunc("/State", GetContentState)
-	register := &tool.ConsulRegister{Id: serverID, Name: "D7-获取详细页获取服务器", Port: serverPort, Tags: []string{"D7-能够或许详细的更新内容！"}}
+	register := &tool.ConsulRegister{Id: serverID, Name: "D7-Content", Port: serverPort, Tags: []string{"D7-能够或许详细的更新内容！"}}
 	register.RegisterConsulService()
 	err := http.ListenAndServe(ip+":"+strconv.Itoa(serverPort), nil)
 

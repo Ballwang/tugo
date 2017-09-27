@@ -257,10 +257,11 @@ func main() {
 
 	//服务器要监听的主机地址和端口号
 	//配置注册服务器信息
+	id:=tool.RandNum(100)
 	ip := tool.GetIP()
 	registration := new(consulapi.AgentServiceRegistration)
-	registration.ID = "M-Badword"
-	registration.Name = "Badword 敏感词管理服务！"
+	registration.ID = "M-Badword:"+strconv.Itoa(id)
+	registration.Name = "M-Badword"
 	registration.Address = ip
 	registration.Port = 8082
 	registration.Tags = []string{"Badword 敏感词管理服务！"}
