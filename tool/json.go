@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"io/ioutil"
+	"strings"
 )
 
 func MakeMarathonJson(Id string,cpus float64,mem float64,instances int,port int)  {
@@ -13,19 +14,19 @@ func MakeMarathonJson(Id string,cpus float64,mem float64,instances int,port int)
 	portMappings:=make(map[string]interface{})
 	healthChecks:=make(map[string]interface{})
 
-	j["id"]=Id
+	j["id"]=strings.ToLower(Id)
 	j["cpus"]=cpus
 	j["mem"]=mem
 	j["instances"]=instances
 
 	j["container"]="DOCKER"
-	portMappings["containerPort"]=8087
-	portMappings["hostPort"]=0
-	portMappings["servicePort"]=8087
+	portMappings["containerPort"]=port
+	portMappings["hostPort"]=port
+	portMappings["servicePort"]=port
 	portMappings["protocol"]="tcp"
 
 	docker["image"]="192.168.3.54:5000/p1-node:1.0"
-	docker["network"]="HOST"
+	docker["network"]="BRIDGE"
 	docker["forcePullImage"]=true
 	docker["portMappings"]=[]interface{}{portMappings}
 
@@ -36,7 +37,7 @@ func MakeMarathonJson(Id string,cpus float64,mem float64,instances int,port int)
 	healthChecks["protocol"]="TCP"
 	healthChecks["gracePeriodSeconds"]=3
 	healthChecks["intervalSeconds"]=5
-	healthChecks["port"]=8087
+	healthChecks["port"]=port
 	healthChecks["timeoutSeconds"]=5
 	healthChecks["maxConsecutiveFailures"]=3
 	j["container"]=container
