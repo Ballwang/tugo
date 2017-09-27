@@ -70,10 +70,14 @@ func MonitorCategoryState(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	id:=tool.RandNum(100)
-	var serverID = "S4-MonitorCategory:"+strconv.Itoa(id)
-	var serverPort = 8090
+
 	ip := tool.GetIP()
+	var serverID = "S4-MonitorCategory:"+ip
+
+	config:=config.NewConfig()
+	serverPort,_:=strconv.Atoi(config.GetConfig("P2-FindBadMonitorList","port"))
+
+
 
 	http.HandleFunc("/MonitorCategory", MonitorCategory)
 	http.HandleFunc("/State", MonitorCategoryState)

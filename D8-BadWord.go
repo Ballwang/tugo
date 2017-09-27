@@ -84,10 +84,13 @@ func FilterBadwordState(w http.ResponseWriter, req *http.Request)  {
 }
 
 func main() {
-	id:=tool.RandNum(100)
-	var serverID = "D8-BadWord:"+strconv.Itoa(id)
-	var serverPort = 8094
+
 	ip := tool.GetIP()
+	var serverID = "D8-BadWord:"+ip
+	config:=config.NewConfig()
+	serverPort,_:=strconv.Atoi(config.GetConfig("D8-BadWord","port"))
+
+
 	http.HandleFunc("/FilterBadword", FilterBadword)
 	http.HandleFunc("/State", FilterBadwordState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "D8-BadWord", Port: serverPort, Tags: []string{"D8 关键词过滤服务！"}}

@@ -52,13 +52,11 @@ func NodeToMonitorState(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	id:=r.Intn(100)
 
-
-	var serverID = "P1-Node:"+strconv.Itoa(id)
-	var serverPort = 8087
 	ip := tool.GetIP()
+	var serverID = "P1-Node:"+ip
+	config:=config.NewConfig()
+	serverPort,_:=strconv.Atoi(config.GetConfig("P1-Node","port"))
 
 	http.HandleFunc("/AddNodeToMonitor", AddNodeToMonitor)
 	http.HandleFunc("/State", NodeToMonitorState)

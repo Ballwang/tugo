@@ -88,6 +88,9 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 	ioutil.WriteFile(name+"-docker.sh", dockerImageStart, 0755)
 	run_shell(name+"-docker")
 
+	//生成marathon create json
+
+
 
 
 	fmt.Println("11111111111111")

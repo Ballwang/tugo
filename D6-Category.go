@@ -69,10 +69,13 @@ func ServerCategoryState(w http.ResponseWriter, req *http.Request) {
 
 //列表页详细链接提取
 func main() {
-	id:=tool.RandNum(100)
-	var serverIDCategory = "D6-Category:"+strconv.Itoa(id)
-	var serverCategoryPort = 8085
+
 	ip := tool.GetIP()
+	var serverIDCategory = "D6-Category:"+ip
+	config:=config.NewConfig()
+	serverCategoryPort,_:=strconv.Atoi(config.GetConfig("D6-Category","port"))
+
+
 	http.HandleFunc("/FilterCategoryList", FilterCategoryList)
 	http.HandleFunc("/State", ServerCategoryState)
 	register := &tool.ConsulRegister{Id: serverIDCategory, Name: "D6-Category", Port: serverCategoryPort, Tags: []string{"列表页链接提取服务！自动识别提取列表页链接！"}}
