@@ -89,6 +89,7 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 	run_shell(name+"-docker")
 
 	//生成marathon create json
+	//使用 json 创建镜像 curl -i -H 'Content-Type: application/json' -d@1.json 192.168.3.21:8080/v2/apps
 
 
 

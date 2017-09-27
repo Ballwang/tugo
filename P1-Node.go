@@ -55,6 +55,7 @@ func main() {
 
 	ip := tool.GetIP()
 	var serverID = "P1-Node:"+ip
+
 	config:=config.NewConfig()
 	serverPort,_:=strconv.Atoi(config.GetConfig("P1-Node","port"))
 
