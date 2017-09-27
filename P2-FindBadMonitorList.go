@@ -110,7 +110,6 @@ func main() {
 	id:=tool.RandNum(100)
 	var serverID = "P2-FindBadMonitorList:"+strconv.Itoa(id)
 	var serverPort = 8088
-
 	ip := tool.GetIP()
 	http.HandleFunc("/StartMonitorList", FindBadMonitorList)
 	http.HandleFunc("/FindBdaWordList", FindBadMonitorSite)
