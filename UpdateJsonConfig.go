@@ -8,18 +8,13 @@ import (
 )
 
 func main()  {
-	config:=config.NewConfig()
-	tool.MakeMarathonJson("P1-Node",0.2,123,2,8087)
-	tool.MakeMarathonJson("P2-FindBadMonitorList",0.2,123,2,8088)
-	tool.MakeMarathonJson("P3-UpdateMonitorList",0.2,123,2,8088)
-	tool.MakeMarathonJson("S4-MonitorCategory",0.2,123,2,8089)
-	tool.MakeMarathonJson("P5-UpdateList",0.2,123,2,8088)
-	tool.MakeMarathonJson("D6-Category",0.2,123,2,8088)
-	tool.MakeMarathonJson("D7-Content",0.2,123,2,8088)
-	tool.MakeMarathonJson("D8-BadWord",0.2,123,2,8088)
-	tool.MakeMarathonJson("D-Redis",0.2,123,2,8088)
-	tool.MakeMarathonJson("E-EsService",0.2,123,2,8088)
-	tool.MakeMarathonJson("M-Badword",0.2,123,2,8088)
+    config:=config.NewConfig()
+	servers :=[]string{"P1-Node","P2-FindBadMonitorList","P3-UpdateMonitorList","S4-MonitorCategory","P5-UpdateList","D6-Category","D7-Content","D8-BadWord","D-Redis","E-EsService","M-Badword"}
+
+	for _,v:=range servers{
+		doJson(config,v)
+	}
+
 }
 
 func doJson(c *config.Config,name string)  {
@@ -27,7 +22,5 @@ func doJson(c *config.Config,name string)  {
 	mem,_:=strconv.ParseFloat(c.GetConfig(name,"mem"),32)
 	instances,_:=strconv.Atoi(c.GetConfig(name,"instances"))
 	port,_:=strconv.Atoi(c.GetConfig(name,"port"))
-
-
 	tool.MakeMarathonJson(name,cpus,mem,instances,port)
 }
