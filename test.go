@@ -96,7 +96,7 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 	marathon+="sleep 6\n"
 	marathon+="curl -i -H 'Content-Type: application/json' -d@config/json/"+name+".json "+marathonHost+"/v2/apps\n"
 
-	marathonStart := []byte(dockerImage)
+	marathonStart := []byte(marathon)
 	ioutil.WriteFile(name+"-marathon.sh", marathonStart, 0755)
 	run_shell(name+"-marathon")
 
