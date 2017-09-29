@@ -91,7 +91,7 @@ func main() {
 	serverPort,_:=strconv.Atoi(config.GetConfig("D8-BadWord","port"))
 
 
-	http.HandleFunc("/FilterBadword", FilterBadword)
+	http.HandleFunc("/D8-BadWord", FilterBadword)
 	http.HandleFunc("/State", FilterBadwordState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "D8-BadWord", Port: serverPort, Tags: []string{"D8 关键词过滤服务！"}}
 	register.RegisterConsulService()

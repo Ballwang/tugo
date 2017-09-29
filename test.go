@@ -2,9 +2,7 @@ package main
 
 import (
 	"net/http"
-
 	"fmt"
-
 	"io/ioutil"
 	"encoding/json"
 	"os/exec"
@@ -61,6 +59,7 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 
 	//写shell
 	start := "#!/bin/sh\n"
+	start += "cd /\n"
 	start += "cd /go/src/\n" //这里使用name变量必须和版本控制名称和执行脚本名称相同
 	start += "./" + name + "\n"
 
@@ -68,9 +67,10 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 	ioutil.WriteFile(path+"start.sh", dstart, 0755)
 
 	//写shell
-	docker := "FROM 192.168.3.54:5000/centos7-go1.9:1.0\n"
-	docker += "MAINTAINER Ballwang  ballwang@foxmail.com" //这里使用name变量必须和版本控制名称和执行脚本名称相同
+	docker := "FROM 192.168.3.54:5000/centos7-go1.9 \n"
+	docker += "MAINTAINER Ballwang  ballwang@foxmail.com\n" //这里使用name变量必须和版本控制名称和执行脚本名称相同
 	docker += "ADD ./config/ /go/src/config/\n"
+	docker += "ADD ./config/json/ /go/src/config/json/\n"
 	docker += "ADD " + name + " /go/src/\n"
 	docker += "ADD start.sh /go/src/\n"
 	docker += "RUN chmod 755 /go/src/\n"
@@ -84,15 +84,25 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 	dockerImage:="cd "+path+"\n"
 	dockerImage+="docker build -t 192.168.3.54:5000/"+strings.ToLower(name)+":1.0 . \n"
 	dockerImage+="docker push 192.168.3.54:5000/"+strings.ToLower(name)+":1.0\n"
+	//删除tag为none的镜像
+	dockerImage+="docker rmi $(docker images -f \"dangling=true\" -q)\n"
 	dockerImageStart := []byte(dockerImage)
 	ioutil.WriteFile(name+"-docker.sh", dockerImageStart, 0755)
 	run_shell(name+"-docker")
 
+	//创建marathon
+	marathon:="cd "+path+"\n"
+	marathon+="curl -i -X DELETE "+marathonHost+"/v2/apps/"+strings.ToLower(name)+"\n"
+	marathon+="sleep 6\n"
+	marathon+="curl -i -H 'Content-Type: application/json' -d@config/json/"+name+".json "+marathonHost+"/v2/apps\n"
+
+	marathonStart := []byte(dockerImage)
+	ioutil.WriteFile(name+"-marathon.sh", marathonStart, 0755)
+	run_shell(name+"-marathon")
+
+
 	//生成marathon create json
 	//使用 json 创建镜像 curl -i -H 'Content-Type: application/json' -d@1.json 192.168.3.21:8080/v2/apps
-
-
-
 
 	fmt.Println("11111111111111")
 

@@ -89,7 +89,7 @@ func main() {
 	serverPort,_:=strconv.Atoi(config.GetConfig("D7-Content","port"))
 
 
-	http.HandleFunc("/StartGetContent", StartGetContent)
+	http.HandleFunc("/D7-Content", StartGetContent)
 	http.HandleFunc("/State", GetContentState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "D7-Content", Port: serverPort, Tags: []string{"D7-能够或许详细的更新内容！"}}
 	register.RegisterConsulService()

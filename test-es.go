@@ -82,11 +82,11 @@ func addData()  {
 
 func createIndex()  {
 	cxt := context.Background()
-	es := &tool.ElasticEsearch{Host:"192.168.4.80", Port:"9200"}
+	es := &tool.ElasticEsearch{Host:"192.168.3.92", Port:"9200"}
 	mapString := `
 	    {
 	       "settings":{
-	           "number_of_shards":5,
+	           "number_of_shards":8,
 		       "number_of_replicas":0
 	       },
 	       "mappings":{
@@ -95,9 +95,37 @@ func createIndex()  {
 				    "enabled": false
 			      }
 		       },
-		       "title":{
+		       "detial":{
 		          "properties":{
 		              "Title":{
+                          "type": "text",
+                          "analyzer": "ik_max_word",
+                          "search_analyzer": "ik_max_word"
+		              },
+		              "TitleSub":{
+                          "type": "text",
+                          "analyzer": "ik_max_word",
+                          "search_analyzer": "ik_max_word"
+
+		              },
+		              "Description":{
+                          "type": "text",
+                          "analyzer": "ik_max_word",
+                          "search_analyzer": "ik_max_word"
+
+		              },
+		              "Author":{
+                          "type": "text",
+                          "analyzer": "ik_max_word",
+                          "search_analyzer": "ik_max_word"
+		              },
+		              "Time":{
+                          "type": "text"
+		              },
+		              "CopyFrom":{
+                          "type": "text"
+		              },
+		              "Content":{
                           "type": "text",
                           "analyzer": "ik_max_word",
                           "search_analyzer": "ik_max_word"
@@ -114,7 +142,7 @@ func createIndex()  {
 	    }
 	`
 
-	err:=es.CreateIndex(cxt, "news", mapString)
+	err:=es.CreateIndex(cxt, "artical", mapString)
 	if err!=nil{
 		fmt.Println(err)
 	}

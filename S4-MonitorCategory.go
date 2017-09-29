@@ -75,11 +75,11 @@ func main() {
 	var serverID = "S4-MonitorCategory:"+ip
 
 	config:=config.NewConfig()
-	serverPort,_:=strconv.Atoi(config.GetConfig("P2-FindBadMonitorList","port"))
+	serverPort,_:=strconv.Atoi(config.GetConfig("S4-MonitorCategory","port"))
 
 
 
-	http.HandleFunc("/MonitorCategory", MonitorCategory)
+	http.HandleFunc("/S4-MonitorCategory", MonitorCategory)
 	http.HandleFunc("/State", MonitorCategoryState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "S4-MonitorCategory", Port: serverPort, Tags: []string{"列表更新监控服务，监控目标采集点是否更新内容！"}}
 	register.RegisterConsulService()

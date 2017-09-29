@@ -56,10 +56,11 @@ func main() {
 
 	ip := tool.GetIP()
 	var serverID = "P1-Node:"+ip
+
 	config:=config.NewConfig()
 	serverPort,_:=strconv.Atoi(config.GetConfig("P1-Node","port"))
 
-	http.HandleFunc("/AddNodeToMonitor", AddNodeToMonitor)
+	http.HandleFunc("/P1-Node", AddNodeToMonitor)
 	http.HandleFunc("/State", NodeToMonitorState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "P1-Node", Port: serverPort, Tags: []string{"数据库节点同步监控服务"}}
 	register.RegisterConsulService()

@@ -114,7 +114,7 @@ func main() {
 	serverPort,_:=strconv.Atoi(config.GetConfig("P2-FindBadMonitorList","port"))
 
 
-	http.HandleFunc("/StartMonitorList", FindBadMonitorList)
+	http.HandleFunc("/P2-FindBadMonitorList", FindBadMonitorList)
 	http.HandleFunc("/FindBdaWordList", FindBadMonitorSite)
 	http.HandleFunc("/State", BadWordMonitorState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "P2-FindBadMonitorList", Port: serverPort, Tags: []string{"P2-链接失效监控服务"}}

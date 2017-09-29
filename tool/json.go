@@ -26,7 +26,7 @@ func MakeMarathonJson(Id string,cpus float64,mem float64,instances int,port int)
 	portMappings["protocol"]="tcp"
 
 	docker["image"]="192.168.3.54:5000/"+strings.ToLower(Id)+":1.0"
-	docker["network"]="BRIDGE"
+	docker["network"]="HOST"
 	docker["forcePullImage"]=true
 	docker["portMappings"]=[]interface{}{portMappings}
 

@@ -49,7 +49,7 @@ func main() {
 	serverPort,_:=strconv.Atoi(config.GetConfig("P5-UpdateList","port"))
 
 
-	http.HandleFunc("/StartUpdateList", StartUpdateList)
+	http.HandleFunc("/P5-UpdateList", StartUpdateList)
 	http.HandleFunc("/State", UpdateListState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "P5-UpdateList", Port: serverPort, Tags: []string{"P5 能够迁移有变动的列表链接到带采集队列中！"}}
 	register.RegisterConsulService()
