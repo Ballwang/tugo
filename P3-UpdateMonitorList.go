@@ -40,8 +40,6 @@ func main()  {
 	var serverID = "P3-UpdateMonitorList:"+ip
 	config:=config.NewConfig()
 	serverPort,_:=strconv.Atoi(config.GetConfig("P3-UpdateMonitorList","port"))
-
-
 	http.HandleFunc("/P3-UpdateMonitorList", StartUpdateMonitorList)
 	http.HandleFunc("/State", UpdateMonitorState)
 	register := &tool.ConsulRegister{Id: serverID, Name: "P3-UpdateMonitorList", Port: serverPort, Tags: []string{"P3 能够控制特定链接的采集频率，能够根据网站更新频率判断伸缩节点被采集频率！"}}

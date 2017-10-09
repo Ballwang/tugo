@@ -19,7 +19,10 @@ var rootDir = "/server/"
 var marathonHost="192.168.3.21:8080"
 //delete by Id "curl -X DELETE  192.168.3.21:8080/v2/apps/nginxweb"
 
-//开始获取网站内容
+
+//监听git hook，更新微服务内容
+// 自动创建docker
+// 自动更新marathon
 
 func GetHook(w http.ResponseWriter, req *http.Request) {
 
@@ -92,8 +95,10 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 
 	//创建marathon
 	marathon:="cd "+path+"\n"
+	//删除原有服务
 	marathon+="curl -i -X DELETE "+marathonHost+"/v2/apps/"+strings.ToLower(name)+"\n"
 	marathon+="sleep 6\n"
+	//创建新服务
 	marathon+="curl -i -H 'Content-Type: application/json' -d@config/json/"+name+".json "+marathonHost+"/v2/apps\n"
 
 	marathonStart := []byte(marathon)

@@ -140,7 +140,7 @@ func GetCatgoryListUrl(siteUrl string,c *redis.Cluster) {
 				return c, nil
 			},
 		}, }
-	s:=tool.CurrentTimeMillis()
+
 	reqest, _ := http.NewRequest("GET", siteUrl, nil)
 	//tool.ErrorPrint(err)
 	reqest.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -149,10 +149,7 @@ func GetCatgoryListUrl(siteUrl string,c *redis.Cluster) {
 	reqest.Header.Add("Connection", "keep-alive")
 	reqest.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11")
 	response, _ := client.Do(reqest)
-	e:=tool.CurrentTimeMillis()
-	fmt.Println(siteUrl)
-	tool.ShowTime(s,e)
-	fmt.Println("--------------------------\n")
+
 	if response != nil {
 
 		if response.StatusCode == 200 {

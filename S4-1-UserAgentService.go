@@ -28,6 +28,7 @@ func main() {
 	processor := UserAgent.NewUserAgentProcessor(hander)
 	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
 
+
 	//配置注册服务器信息
 	ip:=tool.GetIP()
 	rand.Seed(time.Now().Unix())

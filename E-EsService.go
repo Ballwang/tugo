@@ -369,6 +369,8 @@ func main() {
 	//服务器要监听的主机地址和端口号
 	//配置注册服务器信息
 
+
+
 	config:=config.NewConfig()
 	serverPort,_:=strconv.Atoi(config.GetConfig("E-EsService","port"))
 
