@@ -74,6 +74,7 @@ func main() {
 	ip := tool.GetIP()
 	var serverID = "S4-MonitorCategory:"+ip
     //更新
+
 	config:=config.NewConfig()
 	serverPort,_:=strconv.Atoi(config.GetConfig("S4-MonitorCategory","port"))
 
