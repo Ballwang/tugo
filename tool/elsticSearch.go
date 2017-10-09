@@ -184,7 +184,7 @@ func (c *ElasticEsearch) DeleteDataById(cxt context.Context, IdString string, in
 }
 
 //查询数据
-func (c *ElasticEsearch) SearchData(cxt context.Context, termQuery *elastic.MultiMatchQuery, indexString string, typeString string, highlight *elastic.Highlight) (*elastic.SearchHits, error) {
+func (c *ElasticEsearch) SearchData(cxt context.Context, termQuery *elastic.MultiMatchQuery, indexString string, typeString string, highlight *elastic.Highlight,size int) (*elastic.SearchHits, error) {
 	client, err := c.NewElasticEsearch()
 	if err != nil {
 		fmt.Println(err)
@@ -195,6 +195,7 @@ func (c *ElasticEsearch) SearchData(cxt context.Context, termQuery *elastic.Mult
 		Index(indexString).
 		Query(termQuery).
 		Highlight(highlight).
+		Size(size).
 		Do(cxt)
 	if err != nil {
 		fmt.Println(err)

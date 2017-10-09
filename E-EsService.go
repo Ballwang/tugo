@@ -183,6 +183,13 @@ func SearchEsData(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	size:=10
+	_, is := req.Form["size"]
+	if is {
+		size,_=strconv.Atoi(req.Form["size"][0])
+	}
+
+
 	re, isfield2 := req.Form["field2"]
 	field2 := ""
 	query := req.Form["query"][0]
@@ -197,6 +204,7 @@ func SearchEsData(w http.ResponseWriter, req *http.Request) {
 	termQuery := elastic.NewMultiMatchQuery(query, field1, field2)
 	termQuery.Type("best_fields")
 	termQuery.TieBreaker(0.5)
+
 	params := config.NewConfig()
 	preTags := params.GetConfig("elasticsearch", "preTags")
 	postTags := params.GetConfig("elasticsearch", "postTags")
@@ -207,7 +215,9 @@ func SearchEsData(w http.ResponseWriter, req *http.Request) {
 	h.Field(field1)
 	h.Field(field2)
 
-	hits, err := es.SearchData(cxt, termQuery, es.Index, es.Type, h)
+
+
+	hits, err := es.SearchData(cxt, termQuery, es.Index, es.Type, h,size)
 	if err != nil {
 
 	}
@@ -267,7 +277,13 @@ func SearchEsDataHighScore(w http.ResponseWriter, req *http.Request) {
 	h.PostTags(postTags)
 	h.Field(field1)
 
-	hits, err := es.SearchData(cxt, termQuery, es.Index, es.Type, h)
+	size:=10
+	_, is := req.Form["size"]
+	if is {
+		size,_=strconv.Atoi(req.Form["size"][0])
+	}
+
+	hits, err := es.SearchData(cxt, termQuery, es.Index, es.Type, h,size)
 	if err != nil {
 
 	}
