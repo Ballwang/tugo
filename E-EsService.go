@@ -212,16 +212,20 @@ func SearchEsData(w http.ResponseWriter, req *http.Request) {
 
 	}
 
-	if hits.TotalHits > 0 {
-		r, _ := json.Marshal(hits)
-		fmt.Fprint(w, string(r))
+	if hits!=nil{
+		if hits.TotalHits > 0 {
+			r, _ := json.Marshal(hits)
+			fmt.Fprint(w, string(r))
+		}
 	}else {
 		result := make(map[string]interface{})
 		result["success"] = "false"
+		result["code"] = "421"
 		result["message"] = "未查找到相关记录！"
 		r, _ := json.Marshal(result)
 		fmt.Fprint(w, string(r))
 	}
+
 
 }
 
