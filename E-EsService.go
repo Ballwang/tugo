@@ -215,9 +215,18 @@ func SearchEsData(w http.ResponseWriter, req *http.Request) {
 	if hits.TotalHits > 0 {
 		r, _ := json.Marshal(hits)
 		fmt.Fprint(w, string(r))
+	}else {
+		result := make(map[string]interface{})
+		result["success"] = "false"
+		result["message"] = "未查找到相关记录！"
+		r, _ := json.Marshal(result)
+		fmt.Fprint(w, string(r))
 	}
 
 }
+
+
+
 
 //查询搜索结果采用IK 分词查询
 func SearchEsDataHighScore(w http.ResponseWriter, req *http.Request) {
@@ -242,6 +251,7 @@ func SearchEsDataHighScore(w http.ResponseWriter, req *http.Request) {
 	termQuery := elastic.NewMultiMatchQuery(query, field1)
 	//termQuery.Type("best_fields")
 	termQuery.TieBreaker(0.5)
+
 
 
 	params := config.NewConfig()
@@ -282,10 +292,9 @@ func SearchEsDataHighScore(w http.ResponseWriter, req *http.Request) {
 				return
 			}
 		}
-
-
 	} else {
 		result["success"] = "false"
+		result["code"] = "421"
 		result["message"] = "未查找到相关记录！"
 		r, _ := json.Marshal(result)
 		fmt.Fprint(w, string(r))
@@ -365,6 +374,7 @@ func main() {
 	http.HandleFunc("/Del", DelEsData)
 	http.HandleFunc("/Search", SearchEsData)
 	http.HandleFunc("/SearchOne", SearchEsDataHighScore)
+	http.HandleFunc("/SearchTerm", SearchEsDataHighScore)
 	http.HandleFunc("/Update", UpdateEsData)
 	//服务器要监听的主机地址和端口号
 	//配置注册服务器信息
