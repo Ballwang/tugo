@@ -38,7 +38,7 @@ func MakeMarathonJson(Id string,cpus float64,mem float64,instances int,port int)
 	healthChecks["gracePeriodSeconds"]=3
 	healthChecks["intervalSeconds"]=5
 	healthChecks["port"]=port
-	healthChecks["timeoutSeconds"]=6
+	healthChecks["timeoutSeconds"]=5
 	healthChecks["maxConsecutiveFailures"]=3
 	j["container"]=container
 	j["healthChecks"]=[]interface{}{healthChecks}

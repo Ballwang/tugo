@@ -70,7 +70,7 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 	ioutil.WriteFile(path+"start.sh", dstart, 0755)
 
 	//写shell
-	docker := "FROM 192.168.3.54:5000/centos7-go1.9 \n"
+	docker := "FROM 192.168.3.54:5000/centos7-go1.9:1.0\n"
 	docker += "MAINTAINER Ballwang  ballwang@foxmail.com\n" //这里使用name变量必须和版本控制名称和执行脚本名称相同
 	docker += "ADD ./config/ /go/src/config/\n"
 	docker += "ADD ./config/json/ /go/src/config/json/\n"
