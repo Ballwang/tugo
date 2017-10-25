@@ -12,7 +12,7 @@ import (
 )
 
 type ElasticEsearch struct {
-	Host string
+	Host string "192.168.3.92"
 	Port string "9200"
 	Index string "artical"
 	Type string "detail"

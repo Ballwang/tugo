@@ -1,14 +1,14 @@
 package main
 
 import (
-	"net/http"
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"encoding/json"
-	"os/exec"
-	"bytes"
-	"os"
 	"net"
+	"net/http"
+	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -16,9 +16,9 @@ var pass = "lrb123"
 
 var rootDir = "/server/"
 
-var marathonHost="192.168.3.21:8080"
-//delete by Id "curl -X DELETE  192.168.3.21:8080/v2/apps/nginxweb"
+var marathonHost = "192.168.3.21:8080"
 
+//delete by Id "curl -X DELETE  192.168.3.21:8080/v2/apps/nginxweb"
 
 //监听git hook，更新微服务内容
 // 自动创建docker
@@ -45,7 +45,7 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 		git_ssh_url = hook["project"].(map[string]interface{})["git_ssh_url"].(string)
 		name = hook["project"].(map[string]interface{})["name"].(string)
 	}
-	path := rootDir + name+"/"
+	path := rootDir + name + "/"
 	ok, _ := pathExists(path)
 	if !ok {
 		cmd += "mkdir " + rootDir + "\n"
@@ -84,27 +84,26 @@ func GetHook(w http.ResponseWriter, req *http.Request) {
 	ioutil.WriteFile(path+"Dockerfile", ddocker, 0755)
 
 	//构建docker镜像
-	dockerImage:="cd "+path+"\n"
-	dockerImage+="docker build -t 192.168.3.54:5000/"+strings.ToLower(name)+":1.0 . \n"
-	dockerImage+="docker push 192.168.3.54:5000/"+strings.ToLower(name)+":1.0\n"
+	dockerImage := "cd " + path + "\n"
+	dockerImage += "docker build -t 192.168.3.54:5000/" + strings.ToLower(name) + ":1.0 . \n"
+	dockerImage += "docker push 192.168.3.54:5000/" + strings.ToLower(name) + ":1.0\n"
 	//删除tag为none的镜像
-	dockerImage+="docker rmi $(docker images -f \"dangling=true\" -q)\n"
+	dockerImage += "docker rmi $(docker images -f \"dangling=true\" -q)\n"
 	dockerImageStart := []byte(dockerImage)
 	ioutil.WriteFile(name+"-docker.sh", dockerImageStart, 0755)
-	run_shell(name+"-docker")
+	run_shell(name + "-docker")
 
 	//创建marathon
-	marathon:="cd "+path+"\n"
+	marathon := "cd " + path + "\n"
 	//删除原有服务
-	marathon+="curl -i -X DELETE "+marathonHost+"/v2/apps/"+strings.ToLower(name)+"\n"
-	marathon+="sleep 6\n"
+	marathon += "curl -i -X DELETE " + marathonHost + "/v2/apps/" + strings.ToLower(name) + "\n"
+	marathon += "sleep 6\n"
 	//创建新服务
-	marathon+="curl -i -H 'Content-Type: application/json' -d@config/json/"+name+".json "+marathonHost+"/v2/apps\n"
+	marathon += "curl -i -H 'Content-Type: application/json' -d@config/json/" + name + ".json " + marathonHost + "/v2/apps\n"
 
 	marathonStart := []byte(marathon)
 	ioutil.WriteFile(name+"-marathon.sh", marathonStart, 0755)
-	run_shell(name+"-marathon")
-
+	run_shell(name + "-marathon")
 
 	//生成marathon create json
 	//使用 json 创建镜像 curl -i -H 'Content-Type: application/json' -d@1.json 192.168.3.21:8080/v2/apps
@@ -148,7 +147,7 @@ func exec_shell(arg []string) {
 
 //返回本机IP地址
 func GetIP() string {
-	conn, err := net.Dial("udp", "google.com:80")
+	conn, err := net.Dial("udp", "baidu.com:80")
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(-1)

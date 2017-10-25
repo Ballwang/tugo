@@ -4,7 +4,7 @@ import (
 	"github.com/Ballwang/tugo/tool"
 	"context"
 	"fmt"
-	"gopkg.in/olivere/elastic.v5"
+
 
 )
 
@@ -12,7 +12,7 @@ func main() {
 	// Create a context
 	//createIndex()
 	s:=tool.CurrentTimeMillis()
-	createIndex()
+	del()
 	//addData()
 	//GetData()
 	//del()
@@ -23,30 +23,30 @@ func main() {
 }
 
 func GetD()  {
-	cxt := context.Background()
-	es := &tool.ElasticEsearch{Host:"192.168.4.80", Port:"9200"}
-	termQuery := elastic.NewMultiMatchQuery("专查食药问题警察怎办案", "Title", "Content")
-	termQuery.Type("best_fields")
-	termQuery.TieBreaker(0.5)
-
-	h:=elastic.NewHighlight()
-	h.PreTags("<lrbstring>")
-	h.PostTags("</lrbstring>")
-	h.Field("Title")
-	h.Field("Content")
-
-	result,err:=es.SearchData(cxt,termQuery,"artical","detial",h)
-	if err!=nil{
-
-	}
-	fmt.Println(result.MaxScore)
+	//cxt := context.Background()
+	//es := &tool.ElasticEsearch{Host:"192.168.4.80", Port:"9200"}
+	//termQuery := elastic.NewMultiMatchQuery("专查食药问题警察怎办案", "Title", "Content")
+	//termQuery.Type("best_fields")
+	//termQuery.TieBreaker(0.5)
+	//
+	//h:=elastic.NewHighlight()
+	//h.PreTags("<lrbstring>")
+	//h.PostTags("</lrbstring>")
+	//h.Field("Title")
+	//h.Field("Content")
+	//
+	//result,err:=es.SearchData(cxt,termQuery,"artical","detial",h)
+	//if err!=nil{
+	//
+	//}
+	//fmt.Println(result.MaxScore)
 }
 
 
 func del()  {
 	cxt := context.Background()
-	es := &tool.ElasticEsearch{Host:"192.168.4.80", Port:"9200"}
-	md5String:=tool.Md5String("jiangsu10517477")
+	es := &tool.ElasticEsearch{Host:"192.168.3.92", Port:"9200"}
+	md5String:=tool.Md5String("jiangsu91186")
 	fmt.Println(md5String)
 	es.DeleteDataById(cxt,md5String,"artical","detial")
 }
@@ -86,7 +86,7 @@ func createIndex()  {
 	mapString := `
 	    {
 	       "settings":{
-	           "number_of_shards":8,
+	           "number_of_shards":9,
 		       "number_of_replicas":0
 	       },
 	       "mappings":{

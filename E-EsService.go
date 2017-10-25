@@ -115,7 +115,6 @@ func AddEsData(w http.ResponseWriter, req *http.Request) {
 			ShowRequest(w, result)
 			return
 		}
-
 	} else {
 		result["success"] = "false"
 		result["code"]="420"
@@ -152,6 +151,7 @@ func DelEsData(w http.ResponseWriter, req *http.Request) {
 	idString := tool.Md5String(siteName[0] + contentID[0])
 	cxt := context.Background()
 	es := tool.NewESFromConfig()
+
 	isSuccess := es.DeleteDataById(cxt, idString, es.Index, es.Type)
 	if isSuccess {
 		result["success"] = "true"
@@ -173,7 +173,6 @@ func DelEsData(w http.ResponseWriter, req *http.Request) {
 func SearchEsData(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	CheckRight(w, req)
-
 	//result:=make(map[string]interface{})
 
 	if is := CheckValue("query", w, req); !is {
